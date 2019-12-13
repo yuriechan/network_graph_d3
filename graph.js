@@ -19,17 +19,24 @@ let svg = d3.select("body").append("svg")
     .attr("transform", "translate(30,40)")
 
 // initialize the links
-let link = svg
-.selectAll("line")
-.data(data.links)
-.enter()
-.append("line")
-.attr("x1", 0)
-.attr("y1", 0)
-.attr("x2", 50)
-.attr("y2", 0)
-.attr("stroke-width", 2)
-.style("stroke", "#aaa")
+let link = svg.selectAll("line")
+    .data(data.links)
+    .enter()
+    .append("line")
+    .attr("class", "line")
+    // .attr("x1", 0)
+    // .attr("y1", 0)
+    // .attr("x2", 50)
+    // .attr("y2", 0)
+    .attr("x1", function (l) {
+        let sourceNode = data.nodes.filter(function (d, i) {
+            // console.log(i)
+            // console.log(l)
+            // console.log(l.source)
+        })
+    })
+    .attr("stroke-width", 2)
+    .style("stroke", "#aaa")
 
 
 // initialize the nodes
@@ -42,16 +49,16 @@ let nodes = svg.selectAll("node")
     .attr("cy", 60)
     .attr("r", 15)
     .style("fill", "#69b3a2")
-    
+
 
 // returns undefined
-console.log(d3.select(data.nodes[0]))
+// console.log(d3.select(data.nodes[0]))
 
-let simulation = d3.forceSimulation(data.nodes)
-.force("link", d3.forceLink()
-.id(function(d){return d.id})
-.links(data.links)
-)
+// let simulation = d3.forceSimulation(data.nodes)
+// .force("link", d3.forceLink()
+// .id(function(d){return d.id})
+// .links(data.links)
+// )
 
 
 
