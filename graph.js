@@ -12,8 +12,7 @@ const data = {
 }
 
 // canvas
-let svg = d3.select(".network-chart")
-.append("svg")
+let svg = d3.select("body").append("svg")
     .attr("width", "1000px")
     .attr("height", "1000px")
 .append("g")
