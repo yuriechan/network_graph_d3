@@ -33,15 +33,16 @@ let link = svg
 
 
 // initialize the nodes
-let node = svg
-.selectAll("circle")
-.data(data.nodes)
-.enter()
-.append("circle")
-.attr("r", 20)
-.attr("cx", function (d, i) { return i * 60 })
-.style("fill", "#69b3a2")
-
+let nodes = svg.selectAll("node")
+    .data(data.nodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("cx", function (d, i) { return i * 60})
+    .attr("cy", 60)
+    .attr("r", 15)
+    .style("fill", "#69b3a2")
+    
 
 // returns undefined
 console.log(d3.select(data.nodes[0]))
