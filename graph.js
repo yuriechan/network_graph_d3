@@ -1,10 +1,16 @@
 // const data = [{origin: "Wallet 1", destination: "Wallet 2", amount: 300}]
 
 // decided to separate the data into nodes and links 
+// const data = {
+//     "nodes": [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}],
+//     "links": [{"source": 1, "target": 2 , "amount": 300}]
+// }
+
 const data = {
-    "nodes": [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}],
-    "links": [{"source": 1, "target": 2 , "amount": 300}]
+    nodes : [{id: 1, name: "A"}, {id: 2, name: "B"}],
+    links: [{source: 1, target: 2, amount: 300}]
 }
+
 // canvas
 let svg = d3.select(".network-chart")
 .append("svg")
