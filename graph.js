@@ -16,21 +16,23 @@ let link = svg.selectAll("line")
     .enter()
     .append("line")
     .attr("class", "line")
-    // .attr("x1", 0)
-    // .attr("y1", 0)
-    // .attr("x2", 50)
-    // .attr("y2", 0)
-    .attr("x1", function (l) {
-        let sourceNode = data.nodes.filter(function (n) {
-            return n.id === l.source
-        })
-        // returns "line"
-        console.log(sourceNode)
-        // returns undefined 
-        console.log(this.attr("cy"))
-        // returns undefined 
-        console.log(d3.select(this).attr("y1", sourceNode.attr("cy")))
-    })
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 50)
+    .attr("y2", 0)
+
+    // my attempt, but not working
+    // .attr("x1", function (l) {
+    //     let sourceNode = data.nodes.filter(function (n) {
+    //         return n.id === l.source
+    //     })
+    //     // returns "line"
+    //     console.log(sourceNode)
+    //     // returns undefined 
+    //     console.log(this.attr("cy"))
+    //     // returns undefined 
+    //     console.log(d3.select(this).attr("y1", sourceNode.attr("cy")))
+    // })
     .attr("stroke-width", 2)
     .style("stroke", "#aaa")
 
