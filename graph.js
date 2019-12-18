@@ -1,11 +1,3 @@
-// const data = [{origin: "Wallet 1", destination: "Wallet 2", amount: 300}]
-
-// decided to separate the data into nodes and links 
-// const data = {
-//     "nodes": [{"id": 1, "name": "A"}, {"id": 2, "name": "B"}],
-//     "links": [{"source": 1, "target": 2 , "amount": 300}]
-// }
-
 const data = {
     nodes : [{id: 1, name: "A"}, {id: 2, name: "B"}],
     links: [{source: 1, target: 2, amount: 300}]
@@ -29,11 +21,15 @@ let link = svg.selectAll("line")
     // .attr("x2", 50)
     // .attr("y2", 0)
     .attr("x1", function (l) {
-        let sourceNode = data.nodes.filter(function (d, i) {
-            // console.log(i)
-            // console.log(l)
-            // console.log(l.source)
+        let sourceNode = data.nodes.filter(function (n) {
+            return n.id === l.source
         })
+        // returns "line"
+        console.log(sourceNode)
+        // returns undefined 
+        console.log(this.attr("cy"))
+        // returns undefined 
+        console.log(d3.select(this).attr("y1", sourceNode.attr("cy")))
     })
     .attr("stroke-width", 2)
     .style("stroke", "#aaa")
@@ -49,16 +45,5 @@ let nodes = svg.selectAll("node")
     .attr("cy", 60)
     .attr("r", 15)
     .style("fill", "#69b3a2")
-
-
-// returns undefined
-// console.log(d3.select(data.nodes[0]))
-
-// let simulation = d3.forceSimulation(data.nodes)
-// .force("link", d3.forceLink()
-// .id(function(d){return d.id})
-// .links(data.links)
-// )
-
 
 
