@@ -19,10 +19,42 @@ let link = svg.selectAll("line")
     .data(data.links)
     .enter()
     .append("line")
-    .attr("class", "line")
+    .attr("id", function (d, i) {return i})
     .attr("stroke-width", 2)
     .style("stroke", "#aaa")
 
+let linkPaths = svg.selectAll(".linkPath")
+// console logs, 'link object'
+.data(data.links, function (d) {console.log(d)})
+.enter()
+.append('path')
+.attr('d', function(d){let path = 'M ' + d.source + ' ' + d.source + 'L ' + d.target + ' ' + d.target;
+return path})
+.attr('class', 'linkPath')
+.attr('fill-opacity', 0)
+.attr('stroke-opacity', 0)
+.attr('fill', 'blue')
+.attr('stroke', 'red')
+.attr('id', function (d, i) {return 'linkPath' + i})
+.style("pointer-events", "none")
+
+let linkLabels = svg.selectAll(".linkLabel")
+.data(data.links)
+.enter()
+.append('text')
+.style("pointer-events", "none")
+.attr({'class': 'linkLabel', 
+        'id': function (d, i) {return 'linkLabel' + i},
+        'dx': 80,
+        'dy': 0,
+        'font-size': 10,
+        'fill': '#aaa'});
+
+linkLabels.append('textPath')
+    .attr('href', function (d, i) {return '#linkPath' + i})
+    .style("pointer-events", "none")
+    .data(data.links)
+    .text(function (d, i) {return d.amount})
 
 // initialize the nodes
 let node = svg.selectAll("circle")
@@ -43,7 +75,8 @@ let simlulation = d3.forceSimulation(data.nodes)
 
 function ticked() {
     link
-    .attr("x1", function(d) {return d.source.x; })
+    // console logs, 'link object' and the computed property of coordinates
+    .attr("x1", function(d) {console.log(d);return d.source.x; })
     .attr("y1", function(d) {return d.source.y; })
     .attr("x2", function(d) {return d.target.x; })
     .attr("y2", function(d) {return d.target.y; })
@@ -51,4 +84,7 @@ function ticked() {
     node
     .attr("cx", function (d) { return d.x+6; })
     .attr("cy", function (d) {return d.y-6; })
+
+    linkPaths.attr('d', function (d) {let path = 'M ' + d.source.x + ' ' + d.source.y + 'L ' + d.target.x + ' ' + d.target.y;
+                                        return path})
 }
