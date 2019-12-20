@@ -3,12 +3,16 @@ const data = {
     links: [{source: 1, target: 2, amount: 300}]
 }
 
+let margin = { top: 10, right: 30, bottom: 30, left: 40},
+width = 400 - margin.left - margin.right,
+height = 400 - margin.top - margin.bottom
+
 // canvas
 let svg = d3.select("body").append("svg")
-    .attr("width", "1000px")
-    .attr("height", "1000px")
+    .attr("width",  width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
 .append("g")
-    .attr("transform", "translate(30,40)")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 // initialize the links
 let link = svg.selectAll("line")
@@ -16,36 +20,35 @@ let link = svg.selectAll("line")
     .enter()
     .append("line")
     .attr("class", "line")
-    .attr("x1", 0)
-    .attr("y1", 0)
-    .attr("x2", 50)
-    .attr("y2", 0)
-
-    // my attempt, but not working
-    // .attr("x1", function (l) {
-    //     let sourceNode = data.nodes.filter(function (n) {
-    //         return n.id === l.source
-    //     })
-    //     // returns "line"
-    //     console.log(sourceNode)
-    //     // returns undefined 
-    //     console.log(this.attr("cy"))
-    //     // returns undefined 
-    //     console.log(d3.select(this).attr("y1", sourceNode.attr("cy")))
-    // })
     .attr("stroke-width", 2)
     .style("stroke", "#aaa")
 
 
 // initialize the nodes
-let nodes = svg.selectAll("node")
+let node = svg.selectAll("circle")
     .data(data.nodes)
     .enter()
     .append("circle")
-    .attr("class", "node")
-    .attr("cx", function (d, i) { return i * 60})
-    .attr("cy", 60)
     .attr("r", 15)
     .style("fill", "#69b3a2")
 
 
+let simlulation = d3.forceSimulation(data.nodes)
+.force("link", d3.forceLink()
+    .id(function(d) {return d.id;})
+    .links(data.links))
+.force("charge", d3.forceManyBody().strength(-400))
+.force("center", d3.forceCenter(width / 2, height / 2))
+.on("end", ticked)
+
+function ticked() {
+    link
+    .attr("x1", function(d) {return d.source.x; })
+    .attr("y1", function(d) {return d.source.y; })
+    .attr("x2", function(d) {return d.target.x; })
+    .attr("y2", function(d) {return d.target.y; })
+
+    node
+    .attr("cx", function (d) { return d.x+6; })
+    .attr("cy", function (d) {return d.y-6; })
+}
