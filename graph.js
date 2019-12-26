@@ -22,6 +22,17 @@ let link = svg.selectAll("line")
                 .attr("stroke-width", 2)
                 .style("stroke", "#aaa")
 
+let linkPath = svg.selectAll(".linkPath")
+    .data(data.links)
+    .enter()
+    .append('path')
+    .attrs({
+        'class' : 'linkPath',
+        'fill-opacity': 0,
+        'stroke-opacity': 0,
+        'id': function (d, i) {return 'linkPath' + i}
+    })
+
 let linkLabels = svg.selectAll(".linkLabel")
 .data(data.links)
 .enter()
