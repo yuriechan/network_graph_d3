@@ -1,6 +1,6 @@
 const data = {
     nodes : [{id: 1, name: "A"}, {id: 2, name: "B"}, {id: 3, name: "C"}, {id: 4, name: "D"}],
-    links: [{source: 1, target: 2, amount: 300}, {source: 2, target: 3, amount: 300}, {source: 3, target: 4, amount: 300}]
+    links: [{source: 1, target: 2, amount: 100}, {source: 2, target: 3, amount: 200}, {source: 3, target: 4, amount: 300}]
 }
 
 const margin = { top: 10, right: 30, bottom: 30, left: 40},
@@ -26,35 +26,28 @@ let linkPath = svg.selectAll(".linkPath")
     .data(data.links)
     .enter()
     .append('path')
-    .attrs({
-        'class' : 'linkPath',
-        'fill-opacity': 0,
-        'stroke-opacity': 0,
-        'id': function (d, i) {return 'linkPath' + i}
-    })
+        .attr('class', 'linkPath')
+        .attr('fill-opacity', 0)
+        .attr('stroke-opacity', 0)
+        .attr('id', function (d, i) {return 'linkPath' + i})
+        .style("pointer-events", "none")
 
 let linkLabels = svg.selectAll(".linkLabel")
-.data(data.links)
-.enter()
-.append("text")
-.style("pointer-events", "none")
-.attr('class', 'edgelabel')
-.attr('id', function (d, i) {return 'linkLabel' + i})
-.attr('dx', 80)
-.attr('dy', 0)
-.attr('font-size', 10)
-.attr('fill', '#aaa')
+    .data(data.links)
+    .enter()
+    .append("text")
+        .style("pointer-events", "none")
+        .attr('class', 'edgelabel')
+        .attr('id', function (d, i) {return 'linkLabel' + i})
+        .attr('font-size', 10)
+        .attr('fill', '#aaa')
 
 linkLabels.append('textPath')
-.style("pointer-events", "none")
-.text(function (d, i) {return 'label' + i})
-
-// let labels = svg.selectAll("circle")
-// .data(data.nodes)
-// .append("text")
-// .text(function (d) {return d.amount})
-// .attr('x', 6)
-// .attr('y', 3)
+        .attr('xlink:href', function (d, i){return '#linkPath' + i})
+        .style("text-anchor", "middle")
+        .style("pointer-events", "none")
+        .attr("startOffset", "50%")
+        .text(function (d, i) {return d.amount})
 
 // initialize the nodes
 let node = svg.selectAll("circle")
@@ -87,4 +80,9 @@ function ticked() {
     node
     .attr("cx", function (d) { return d.x; })
     .attr("cy", function (d) {return d.y; })
+
+    linkPath
+    .attr('d', function(d) {
+        return 'M' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y
+    })
 }
