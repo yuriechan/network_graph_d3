@@ -1,6 +1,6 @@
 const data = {
-    nodes : [{id: 1, name: "A"}, {id: 2, name: "B"}, {id: 3, name: "C"}, {id: 4, name: "D"}],
-    links: [{source: 1, target: 2, amount: 100}, {source: 2, target: 3, amount: 200}, {source: 3, target: 4, amount: 300}, {source: 1, target: 3, amount: 400}]
+    nodes : [{id: 0, name: "A"}, {id: 1, name: "B"}, {id: 2, name: "C"}, {id: 3, name: "D"}],
+    links: [{source: 0, target: 1, amount: 100}, {source: 1, target: 2, amount: 200}, {source: 2, target: 3, amount: 300}, {source: 1, target: 0, amount: 480}, {source: 0, target: 2, amount: 480}]
 }
 
 const margin = { top: 10, right: 30, bottom: 30, left: 40},
@@ -73,6 +73,7 @@ let node = svg.selectAll("circle")
             .append("circle")
                 .attr("r", 15)
                 .style("fill", "#69b3a2")
+                .attr("id", function(d, i){return i})
 
 let simulation = d3.forceSimulation(data.nodes)
                 .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links).distance(function (d){return (d.amount / 100) * 40}))
@@ -95,8 +96,8 @@ function ticked() {
     .attr("y2", function(d) {return d.target.y; })
 
     node
-    .attr("cx", function (d) { return d.x; })
-    .attr("cy", function (d) {return d.y; })
+    .attr("cx", function (d) {return d.x < 15 ? d.x = 15 : d.x > 380 ? d.x = 380 : d.x; })
+    .attr("cy", function (d) {return d.y < 15 ? d.y = 15 : d.y > 380 ? d.y = 380 : d.y; })
 
     linkPath
     .attr('d', function(d) {
