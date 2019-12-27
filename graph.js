@@ -7,6 +7,7 @@ const margin = { top: 10, right: 30, bottom: 30, left: 40},
 width = 400 - margin.left - margin.right,
 height = 400 - margin.top - margin.bottom
 
+let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
 // canvas
 let svg = d3.select("body")
             .append("svg")
@@ -20,8 +21,8 @@ let link = svg.selectAll("line")
             .append("line")
                 .attr("id", function (d, i) {return `link ${i}`})
                 .attr("stroke-width", 2)
-                .style("stroke", "#aaa")
                 .attr('marker-end', 'url(#arrowHead)')
+                .style("stroke", function (d){return colorScale(d.source)})
 
 let linkPath = svg.selectAll(".linkPath")
     .data(data.links)
