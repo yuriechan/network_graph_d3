@@ -8,6 +8,7 @@ width = 400 - margin.left - margin.right,
 height = 400 - margin.top - margin.bottom
 
 let colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+
 // canvas
 let svg = d3.select("body")
             .append("svg")
@@ -76,7 +77,23 @@ let node = svg.selectAll("circle")
                 .style("fill", "#69b3a2")
                 .attr("id", function(d, i){return i})
 
-let simulation = d3.forceSimulation(data.nodes)
+let linkNodes = [];
+data.links.forEach(function (link){
+    linkNodes.push({
+        source: data.nodes[link.source],
+        target: data.nodes[link.target]
+    })
+})
+
+let invisible_linkNode = svg.selectAll(".link-node")
+                        .data(linkNodes)
+                        .enter()
+                        .append("circle")
+                            .attr("class", "link-node")
+                            .attr("r", 2)
+                            .style("fill", "#ccc")
+
+let simulation = d3.forceSimulation(data.nodes.concat(linkNodes))
                 .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links).distance(function (d){return (d.amount / 100) * 40}))
                 .force("charge", d3.forceManyBody().strength(-1000))
                 .force("center", d3.forceCenter(width / 2, height / 2))
@@ -90,6 +107,10 @@ simulation
     .links(data.links)
 
 function ticked() {
+   invisible_linkNode
+    .attr("cx", function (d){return d.x = (d.source.x + d.target.x) * 0.5})
+    .attr("cy", function (d){return d.y = (d.source.y + d.target.y) * 0.5})
+
     link
     .attr("x1", function(d) {return d.source.x; })
     .attr("y1", function(d) {return d.source.y; })
