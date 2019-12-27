@@ -1,6 +1,6 @@
 const data = {
     nodes : [{id: 1, name: "A"}, {id: 2, name: "B"}, {id: 3, name: "C"}, {id: 4, name: "D"}],
-    links: [{source: 1, target: 2, amount: 100}, {source: 2, target: 3, amount: 200}, {source: 3, target: 4, amount: 300}]
+    links: [{source: 1, target: 2, amount: 100}, {source: 2, target: 3, amount: 200}, {source: 3, target: 4, amount: 300}, {source: 1, target: 3, amount: 400}]
 }
 
 const margin = { top: 10, right: 30, bottom: 30, left: 40},
@@ -75,7 +75,7 @@ let node = svg.selectAll("circle")
                 .style("fill", "#69b3a2")
 
 let simulation = d3.forceSimulation(data.nodes)
-                .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links))
+                .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links).distance(function (d){return (d.amount / 100) * 40}))
                 .force("charge", d3.forceManyBody().strength(-400))
                 .force("center", d3.forceCenter(width / 2, height / 2))
 
