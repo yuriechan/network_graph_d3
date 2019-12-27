@@ -76,7 +76,7 @@ let node = svg.selectAll("circle")
 
 let simulation = d3.forceSimulation(data.nodes)
                 .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links).distance(function (d){return (d.amount / 100) * 40}))
-                .force("charge", d3.forceManyBody().strength(-400))
+                .force("charge", d3.forceManyBody().strength(-1000))
                 .force("center", d3.forceCenter(width / 2, height / 2))
 
 simulation
