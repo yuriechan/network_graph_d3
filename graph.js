@@ -90,16 +90,18 @@ let invisible_linkNode = svg.selectAll(".link-node")
                         .enter()
                         .append("circle")
                             .attr("class", "link-node")
-                            .attr("r", 2)
+                            .attr("r", 5)
                             .style("fill", "#ccc")
 
+           
 let simulation = d3.forceSimulation(data.nodes.concat(linkNodes))
-                .force("link", d3.forceLink().id(function(d) {return d.id;}).links(data.links).distance(function (d){return (d.amount / 100) * 40}))
-                .force("charge", d3.forceManyBody().strength(-1000))
+                .force("link", d3.forceLink(data.links).id(function(d) {return d.id;}).distance(function (d){return (d.amount / 100) * 40}))
+                .force("charge", d3.forceManyBody().strength(-100))
                 .force("center", d3.forceCenter(width / 2, height / 2))
-
+                .force("collide", d3.forceCollide(-10))
+              
 simulation
-    .nodes(data.nodes)
+    .nodes(data.nodes.concat(linkNodes))
     .on("tick", ticked)
 
 simulation
@@ -107,10 +109,6 @@ simulation
     .links(data.links)
 
 function ticked() {
-   invisible_linkNode
-    .attr("cx", function (d){return d.x = (d.source.x + d.target.x) * 0.5})
-    .attr("cy", function (d){return d.y = (d.source.y + d.target.y) * 0.5})
-
     link
     .attr("x1", function(d) {return d.source.x; })
     .attr("y1", function(d) {return d.source.y; })
@@ -125,4 +123,8 @@ function ticked() {
     .attr('d', function(d) {
         return 'M' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y
     })
+
+    invisible_linkNode
+    .attr("cx", function (d){return d.x = (d.source.x + d.target.x) * 0.5})
+    .attr("cy", function (d){return d.y = (d.source.y + d.target.y) * 0.5})
 }
