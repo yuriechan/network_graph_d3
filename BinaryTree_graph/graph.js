@@ -26,10 +26,7 @@ let canvas = d3.select("body")
                 .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-//link generator
-// let link = d3.linkVertical()
-//                     .x(function(d) {return d.x })
-//                     .y(function(d) {return d.y })
+
 
 let tree = d3.tree()
                 .size([height,width])
@@ -56,6 +53,20 @@ const node = canvas.selectAll(".node")
 
     node.append("text")
         .text(function (d) {return d.data.name })
+
+//link generator
+let vertical = d3.linkVertical()
+                .x(function(d) { return d.x })
+                .y(function(d) { return d.y })
+
+const link = canvas.selectAll(".link")
+    .data(links)
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("fill", "none")
+    .attr("stroke", "#ADADAD")
+    .attr("d", vertical)
 
 console.log(root);
 console.log(nodes);
