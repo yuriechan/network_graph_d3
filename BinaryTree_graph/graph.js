@@ -28,16 +28,10 @@ let canvas = d3.select("body")
 
 
 
-let tree = d3.tree()
-                .size([height,width])
-// assign properties for 'hierarchy' 
+let tree = d3.tree().size([height,width])
 const root = d3.hierarchy(data);
-// assign coordinates for the parent and its descendants
 tree(root);
-
-// return array of nodes, with generated coordinates
 const nodes = root.descendants();
-// return array of links, with generated coordinates
 const links = root.links();
 
 const node = canvas.selectAll(".node")
@@ -68,11 +62,3 @@ const link = canvas.selectAll(".link")
     .attr("stroke", "#ADADAD")
     .attr("d", vertical)
 
-console.log(root);
-console.log(nodes);
-console.log(links);
-
-// canvas.append("path")
-//     .attr("fill", "none")
-//     .attr("stroke", "black")
-//     .attr("d", link(data))
