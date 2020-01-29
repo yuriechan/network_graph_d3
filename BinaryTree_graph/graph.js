@@ -49,7 +49,7 @@ const node = canvas.selectAll(".node")
         .text(function (d) {return d.data.name })
 
 //link generator
-let vertical = d3.linkVertical()
+let line = d3.line()
                 .x(function(d) { return d.x })
                 .y(function(d) { return d.y })
 
@@ -60,5 +60,7 @@ const link = canvas.selectAll(".link")
     .attr("class", "link")
     .attr("fill", "none")
     .attr("stroke", "#ADADAD")
-    .attr("d", vertical)
+    .attr("d", function(d){
+        return line([d.source, d.target])
+    })
 
