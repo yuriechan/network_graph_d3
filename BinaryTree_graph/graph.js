@@ -21,7 +21,7 @@ height = 500 - margin.top - margin.bottom
 // canvas
 let canvas = d3.select("body")
                 .append("svg")
-                    .attr("weight", width + margin.left + margin.right)
+                    .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
@@ -53,6 +53,9 @@ const node = canvas.selectAll(".node")
     node.append("circle")
         .attr("r", 5)
         .attr("fill", "blue")
+
+    node.append("text")
+        .text(function (d) {return d.data.name })
 
 console.log(root);
 console.log(nodes);
