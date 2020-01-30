@@ -34,29 +34,25 @@ function recursion (obj) {
         dataFormat.children.push(childNode)
     }
     console.log(obj)
-    // for (let k = 0; k < obj.targets.length; k++) {
-    //     console.log(`index num of obj targets: ${k}`)
-    //     console.log(`obj.targets: ${obj.targets[k]}`)
-    //     for (let j = 0; j < transactions.length; j++) {
-    //         // console.log(`index number of transactions: ${j}`)
-    //         // console.log(transactions[j])
-    //         console.log('dataFormat')
-    //         console.log(dataFormat.children[k].name)
-    //         // console.log(transactions[j])
-    //         // if (dataFormat.children[k].name === transactions[j].source) {
-    //         //     console.log(dataFormat.children[k].name)
-    //         //     console.log(transactions[j])
-    //         //     recursion(transactions[j])
-    //         // }
-    //     }
-    // }
+    console.log(dataFormat)
+    
+    dataFormat.children[0].children = []
+    for (let k = 0; k < transactions.length; k++) {
+        if (transactions[k].source === dataFormat.children[0].name) {
+            for (let l = 0; l < transactions[k].targets.length; l++) {
+                let obj = {}
+                obj["name"] = transactions[k].targets[l]
+                dataFormat.children[0].children.push(obj)
+                console.log(dataFormat.children[0])
+            }
+        }
+        
+    }
 
     // recursion(dataFormat.children[0])
-    console.log(dataFormat)
 }
 
 function main (arr) {
-    recursion(arr[0])
+    return recursion(arr[0])
 }
 console.log(main(transactions))
-// console.log(treeConverter(transactions))
