@@ -75,7 +75,7 @@ const data = {
  }
 
  // set margin for layouts
- const margin = { top: 10, right: 30, bottom: 30, left: 40},
+ const margin = { top: 30, right: 30, bottom: 30, left: 40},
  width = 500 - margin.left - margin.right,
  height = 500 - margin.top - margin.bottom
  
@@ -119,3 +119,21 @@ const link = canvas.selectAll(".link")
     .attr("fill", "none")
     .attr("stroke", "#ADADAD")
     .attr("d", d => line([d.source, d.target]))
+    .attr("marker-end", 'url(#arrowHead)')
+
+
+const arrowheads = d3.select("svg")
+                .append('defs')
+                .append('marker')
+                    .attr('id', 'arrowHead')
+                    .attr('viewBox', '-0 -5 10 10')
+                    .attr('refX', 23)
+                    .attr('refY', 0)
+                    .attr('orient', 'auto')
+                    .attr('markerWidth', 5)
+                    .attr('markerHeight', 5)
+                    .attr('xoverflow', 'visible')
+                .append('avg:path')
+                    .attr('d', 'M 0, -5 L 10,0 L 0,5')
+                    .attr('fill', '#ADADAD')
+                    .style('stroke', 'none')
