@@ -86,3 +86,26 @@ const data = {
                     .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+let tree_d3 = d3.tree().size([height, width])
+const root = d3.hierarchy(data)
+tree_d3(root)
+
+const nodes = root.descendants()
+const links = root.links()
+
+const node = canvas.selectAll(".node")
+    .data(nodes)
+    .enter()
+    .append("g")
+        .attr("class", "node")
+        .attr("transform", d =>  "translate(" + d.x + "," + d.y + ")" )
+
+    node.append("circle")
+        .attr("r", 5)
+        .attr("fill", "blue")
+
+    node.append("text")
+        .text( d => d.data.name)
+
+
