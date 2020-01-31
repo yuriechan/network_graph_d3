@@ -12,7 +12,7 @@ let tree = {
 }
 
 let root = createRoot(transactions[0])
-createLeftChild(root)
+createLeftChild(root.children[0])
 
 function createRoot (obj) {
     tree.name = obj.source
@@ -24,18 +24,25 @@ function createRoot (obj) {
     return tree
 }
 
-function createLeftChild (obj) {
-
-    obj.children[0].children = []
+function createLeftChild (childObj) {
+    childObj.children = []
     for (let k = 0; k < transactions.length; k++) {
-        if (transactions[k].source === obj.children[0].name) {
+        if (transactions[k].source === childObj.name) {
             for (let l = 0; l < transactions[k].targets.length; l++) {
                 let child = {}
                 child["name"] = transactions[k].targets[l]
-                obj.children[0].children.push(child)
-                console.log(obj.children[0])
+                childObj.children.push(child)
             }
         }
     }
+
+    if (childObj.children[0] === undefined) {
+        return
+    }
+
+    createLeftChild(childObj.children[0])
+    console.log(JSON.stringify(root))
 }
+
+
 
