@@ -103,9 +103,19 @@ const node = canvas.selectAll(".node")
 
     node.append("circle")
         .attr("r", 5)
-        .attr("fill", "blue")
+        .attr("fill", "#ADAD")
 
     node.append("text")
-        .text( d => d.data.name)
+        .text( d => d.data.name )
 
+let line = d3.line()
+                .x( d => d.x )
+                .y( d => d.y )
 
+const link = canvas.selectAll(".link")
+    .data(links)
+    .enter()
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", "#ADADAD")
+    .attr("d", d => line([d.source, d.target]))
