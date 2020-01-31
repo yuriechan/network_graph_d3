@@ -12,14 +12,16 @@ let tree = {
     amounts: []
 }
 
-let root = createRoot(transactions[0])
-// left child for root node
-createLeftChild(root.children[0])
-// right child for root node
-createRightChild(root.children[1])
+createTree()
 
+function createTree () {
+    let root = createRoot(transactions[0])
+    createLeftChild(root.children[0])
+    createRightChild(root.children[1])
+    console.log(JSON.stringify(root))
+}
 
-
+// helper function 1 
 function createRoot (obj) {
     tree.name = obj.source
     for (let i = 0; i < obj.targets.length; i++) {
@@ -35,6 +37,7 @@ function createRoot (obj) {
     return tree
 }
 
+// helper function 2 
 function createLeftChild (childObj) {
     childObj.children = []
     childObj.amounts = []
@@ -95,4 +98,3 @@ function createRightChild (childObj) {
 }
 
 
-console.log(JSON.stringify(root))
