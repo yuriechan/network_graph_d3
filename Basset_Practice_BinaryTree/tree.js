@@ -13,8 +13,12 @@ let tree = {
 }
 
 let root = createRoot(transactions[0])
+// left child for root node
 createLeftChild(root.children[0])
-//createRightChild(root.children[0])
+// right child for root node
+createRightChild(root.children[1])
+
+
 
 function createRoot (obj) {
     tree.name = obj.source
@@ -54,31 +58,41 @@ function createLeftChild (childObj) {
 
     if (childObj.children[0] === undefined) {
         return
+    } else {
+        createLeftChild(childObj.children[0])
+        createRightChild(childObj.children[1])
     }
-
-    createLeftChild(childObj.children[0])
-    console.log(JSON.stringify(root))
 }
 
 function createRightChild (childObj) {
+
     childObj.children = []
+    childObj.amounts = []
+    // looking for children && amounts
     for (let k = 0; k < transactions.length; k++) {
         if (transactions[k].source === childObj.name) {
+            // children
             for (let l = 0; l < transactions[k].targets.length; l++) {
                 let child = {}
                 child["name"] = transactions[k].targets[l]
                 childObj.children.push(child)
+            }
+            // amounts
+            for (let m = 0; m < transactions[k].amounts.length; m++) {
+                let amount = {}
+                amount["amount"] = transactions[k].amounts[m]
+                childObj.amounts.push(amount)
             }
         }
     }
 
     if (childObj.children[1] === undefined) {
         return
+    } else {
+        createRightChild(childObj.children[1])
+        createLeftChild(childObj.children[0])
     }
-
-    createLeftChild(childObj.children[1])
-    console.log(JSON.stringify(root))
 }
 
 
-
+console.log(JSON.stringify(root))
