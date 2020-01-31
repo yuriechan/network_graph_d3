@@ -12,13 +12,14 @@ let tree = {
     amounts: []
 }
 
-createTree()
+const binaryTree = createTree()
 
 function createTree () {
     let root = createRoot(transactions[0])
     createLeftChild(root.children[0])
     createRightChild(root.children[1])
     console.log(JSON.stringify(root))
+    return root
 }
 
 // helper function 1 
