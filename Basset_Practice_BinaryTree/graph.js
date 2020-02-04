@@ -102,53 +102,30 @@ const data = {
                 .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-const gNode = canvas.selectAll(".node")
-    .data(nodes)
-    .enter()
-    .append("g")
+const gNode = canvas.append("g")
         .attr("class", "node")
-        .attr("transform", d =>  "translate(" + d.x + "," + d.y + ")" )
         .attr("cursor", "pointer")
         .attr("pointer-events", "all")
-
-    gNode.append("circle")
-        .attr("r", 10)
-        .attr("fill", "#ADAD")
-
-    gNode.append("text")
-        .text( d => d.data.name )
 
 let line = d3.line()
                 .x( d => d.x )
                 .y( d => d.y )
 
-const gLink = canvas.selectAll(".link")
-    .data(links)
-    .enter()
-    .append("g")
+const gLink = canvas.append("g")
         .attr("class", "link")
-    .append("path")
-        .attr("id", (d, i) => `linkPath${i}`)
-        .attr("fill", "none")
-        .attr("stroke", "#ADADAD")
-        .attr("d", d => line([d.source, d.target]))
-        .attr("marker-end", 'url(#arrowHead)')
+         .append("path")
+            .attr("fill", "none")
+            .attr("stroke", "#ADADAD")
+            .attr("marker-end", 'url(#arrowHead)')
 
-const linkLabel = canvas.selectAll(".linkLabels")
-        .data(links)
-        .enter()
-        .append("g")
+const glinkLabel = canvas.append("g")
             .attr("id", "linkLabels")
             .attr("class", "linkLabels")
         .append("text")
             .attr("class", "linkLabel")
         .append("textPath")
-            .attr("xlink:href", (d, i) => `#linkPath${i}`)
             .attr("fill", "#BAEA")
             .attr("dy", "5")
-            .attr("x", d => d.source.x + (d.target.x - d.source.x) * 0.8)
-            .attr("y", d => d.source.y + (d.target.y - d.source.y) * 0.8)
-            .text( (d) => d.source.data.amounts[1].amount)
             .attr("startOffset", "50%")
 
 const arrowheads = d3.select("svg")
@@ -188,8 +165,8 @@ function update(source) {
 
    const nodeEnter = node.enter().append("g")
                      .attr("transform", d => `translate(${source.x0}, ${source.y0})`)
-                     .attr("fill-opacity", 1)
-                     .attr("stroke-opacity", 1)
+                     .attr("fill-opacity", 0.5) // later change it to 0
+                     .attr("stroke-opacity", 0.5) // later change it to 0
                      .on("click", d => {
                         d.children = d.children ? null : d._children
                         update(d)
@@ -202,6 +179,7 @@ function update(source) {
    nodeEnter.append("text")
             .text( d => d.data.name )
                .clone(true).lower()
+               .attr("stroke-width", 3)
 
    const nodeUpdate = node.merge(nodeEnter).transition(transitions)
                   .attr("transform", d => `translate(${d.x}, ${d.y})`)
@@ -216,6 +194,16 @@ function update(source) {
     // update, enter, exit for links
    const link = gLink.selectAll("path")
                .data(links, d => d.target.id)
+               .attr("id", (d, i) => `linkPath${i}`)
+               .attr("d", d => line([d.source, d.target]))
+
+   const linkLabel = glinkLabel.selectAll("textPath")
+                     .data(links)
+                     .enter()
+                     .attr("xlink:href", (d, i) => `#linkPath${i}`)
+                     .attr("x", d => d.source.x + (d.target.x - d.source.x) * 0.8)
+                     .attr("y", d => d.source.y + (d.target.y - d.source.y) * 0.8)
+                     .text( d => d.source.data.amounts[1].amount)
    
    const linkEnter = link.enter().append("path")
                         .attr("d", d => {
