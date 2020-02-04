@@ -100,6 +100,8 @@ const node = canvas.selectAll(".node")
     .append("g")
         .attr("class", "node")
         .attr("transform", d =>  "translate(" + d.x + "," + d.y + ")" )
+        .attr("cursor", "pointer")
+        .attr("pointer-events", "all")
 
     node.append("circle")
         .attr("r", 10)
@@ -156,3 +158,19 @@ const arrowheads = d3.select("svg")
                     .attr('d', 'M 0, -5 L 10,0 L 0,5')
                     .attr('fill', '#ADADAD')
                     .style('stroke', 'none')
+
+
+// set children to null, to only display the root node
+ // root 
+   root.x0 = root.x
+   root.y0 = root.y
+  
+ // children
+   root.descendants().forEach((d, i) => {
+      d.id = i;
+      d._children = d.children;
+      if (d.depth !== 4) d.children = null;
+   })
+
+
+  
