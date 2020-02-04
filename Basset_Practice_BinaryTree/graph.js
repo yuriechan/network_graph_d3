@@ -197,14 +197,28 @@ const arrowheads = d3.select("svg")
                .text( d => d.data.name )
                   .clone(true).lower()
       
-      const nodeUpdate = node.merge(nodeEnter).transition(transition)
+      const nodeUpdate = node.merge(nodeEnter).transition(transitions)
                         .attr("transform", d => `translate(${d.x}, ${d.y})`)
                         .attr("fill-opacity", 1)
                         .attr("fill-opacity", 1)
 
-      const nodeExit = node.exit().transition(transition).remove()
+      const nodeExit = node.exit().transition(transitions).remove()
                         .attr("transform", d => `translate(${source.x}, ${source.y})`)
                         .attr("fill-opacity", 0)
                         .attr("fill-opacity", 0)
                         
+// enter, exit for links
+   const linkEnter = link.enter().append("path")
+                        .attr("d", d => {
+                           return line([d.source, d.target])
+                        })
 
+   link.merge(linkEnter).transition(transitions)
+                        .attr("d", d => {
+                           return line([d.source, d.target])
+                        })
+
+   link.exit().transition(transitions).remove()
+      .attr("d", d => {
+         return line([d.source, d.target])
+      })
