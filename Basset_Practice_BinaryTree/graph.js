@@ -83,8 +83,8 @@ const data = {
  // set children to null, to only display the root node
    // root 
    const root = d3.hierarchy(data)
-   root.x0 = root.x
-   root.y0 = root.y
+   root.x0 = 0
+   root.y0 = 0
  
 
 // children
@@ -103,30 +103,25 @@ const data = {
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 const gNode = canvas.append("g")
-        .attr("class", "node")
-        .attr("cursor", "pointer")
-        .attr("pointer-events", "all")
-
-let line = d3.line()
-                .x( d => d.x )
-                .y( d => d.y )
+               .attr("class", "node")
+               .attr("cursor", "pointer")
+               .attr("pointer-events", "all")
 
 const gLink = canvas.append("g")
-        .attr("class", "link")
-         .append("path")
-            .attr("fill", "none")
-            .attr("stroke", "#ADADAD")
-            .attr("marker-end", 'url(#arrowHead)')
+               .attr("class", "link")
+               .attr("fill", "none")
+               .attr("stroke", "#ADADAD")
+               .attr("stroke-width", 1.5)
 
 const glinkLabel = canvas.append("g")
-            .attr("id", "linkLabels")
-            .attr("class", "linkLabels")
-        .append("text")
-            .attr("class", "linkLabel")
-        .append("textPath")
-            .attr("fill", "#BAEA")
-            .attr("dy", "5")
-            .attr("startOffset", "50%")
+                     .attr("id", "linkLabels")
+                     .attr("class", "linkLabels")
+                        .append("text")
+                              .attr("class", "linkLabel")
+                        .append("textPath")
+                              .attr("fill", "#BAEA")
+                              .attr("dy", "5")
+                              .attr("startOffset", "50%")
 
 const arrowheads = d3.select("svg")
                 .append('defs')
@@ -174,7 +169,7 @@ function update(source) {
 
    nodeEnter.append("circle")
             .attr("r", 10)
-            .attr("fill", d => d._children ? "#ADAD" : "#524400")
+            .attr("fill", d => d._children ? "#04ab5b" : "#ADAD")
    
    nodeEnter.append("text")
             .text( d => d.data.name )
@@ -192,7 +187,11 @@ function update(source) {
                   .attr("fill-opacity", 0)
    
     // update, enter, exit for links
-   const link = gLink.selectAll("path")
+   let line = d3.line()
+               .x( d => d.x )
+               .y( d => d.y )
+                
+   const link = gLink.selectAll("g")
                .data(links, d => d.target.id)
                .attr("id", (d, i) => `linkPath${i}`)
                .attr("d", d => line([d.source, d.target]))
@@ -209,6 +208,7 @@ function update(source) {
                         .attr("d", d => {
                            return line([d.source, d.target])
                         })
+                        .attr("marker-end", 'url(#arrowHead)')
 
    link.merge(linkEnter).transition(transitions)
                         .attr("d", d => {
