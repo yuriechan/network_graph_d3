@@ -91,11 +91,11 @@ let tree_d3 = d3.tree().size([height, width])
 const root = d3.hierarchy(data)
 tree_d3(root)
 
-const nodes = root.descendants()
+const nodes = root.descendants().reverse()
 const links = root.links()
 
 const node = canvas.selectAll(".node")
-    .data(nodes)
+    .data(nodes, d => d.id)
     .enter()
     .append("g")
         .attr("class", "node")
@@ -115,7 +115,7 @@ let line = d3.line()
                 .y( d => d.y )
 
 const link = canvas.selectAll(".link")
-    .data(links)
+    .data(links, d => d.target.id)
     .enter()
     .append("g")
         .attr("class", "link")
@@ -161,16 +161,50 @@ const arrowheads = d3.select("svg")
 
 
 // set children to null, to only display the root node
- // root 
-   root.x0 = root.x
-   root.y0 = root.y
-  
- // children
-   root.descendants().forEach((d, i) => {
-      d.id = i;
-      d._children = d.children;
-      if (d.depth !== 4) d.children = null;
-   })
+   // root 
+      root.x0 = root.x
+      root.y0 = root.y
+   
+   // children
+      root.descendants().forEach((d, i) => {
+         d.id = i;
+         d._children = d.children;
+         if (d.depth !== 4) d.children = null;
+      })
 
+// durations for animation
+      const duration = d3.event ? 250 : 0;
 
-  
+//transitions
+      const transitions = canvas.transition()
+                           .duration(duration)
+
+// enter, exit for nodes
+      const nodeEnter = node.enter().append("g")
+                        .attr("transform", d => `translate(${source.x0}, ${source.y0})`)
+                        .attr("fill-opacity", 1)
+                        .attr("stroke-opacity", 1)
+                        .on("click", d => {
+                           d.children = d.children ? null : d._children
+                           update(d)
+                        })
+
+      nodeEnter.append("circle")
+               .attr("r", 10)
+               .attr("fill", d => d._children ? "#ADAD" : "#524400")
+      
+      nodeEnter.append("text")
+               .text( d => d.data.name )
+                  .clone(true).lower()
+      
+      const nodeUpdate = node.merge(nodeEnter).transition(transition)
+                        .attr("transform", d => `translate(${d.x}, ${d.y})`)
+                        .attr("fill-opacity", 1)
+                        .attr("fill-opacity", 1)
+
+      const nodeExit = node.exit().transition(transition).remove()
+                        .attr("transform", d => `translate(${source.x}, ${source.y})`)
+                        .attr("fill-opacity", 0)
+                        .attr("fill-opacity", 0)
+                        
+
