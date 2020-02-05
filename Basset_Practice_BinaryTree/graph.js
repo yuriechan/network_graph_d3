@@ -192,7 +192,7 @@ function update(source) {
    const link = gLink.selectAll("g")
                .data(links, d => d.target.id)
                .attr("id", (d, i) => `linkPath${i}`)
-               .attr("d", d => line([d.source, d.target]))
+               .attr("d", d => line(d.source, d.target))
 
    const linkLabel = glinkLabel.selectAll("textPath")
                      .data(links)
@@ -204,7 +204,7 @@ function update(source) {
    
    const linkEnter = link.enter().append("path")
                         .attr("d", d => {
-                           return line([d.source, d.target])
+                           return line(d.source, d.target)
                         })
                         .attr("marker-end", 'url(#arrowHead)')
 
