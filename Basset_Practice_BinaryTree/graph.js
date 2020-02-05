@@ -189,7 +189,7 @@ function update(source) {
                .x( d => d.x )
                .y( d => d.y )
                 
-   const link = gLink.selectAll("g")
+   const link = gLink.selectAll("path")
                .data(links, d => d.target.id)
                .attr("id", (d, i) => `linkPath${i}`)
                .attr("d", d => line(d.source, d.target))
