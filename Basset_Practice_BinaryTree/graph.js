@@ -198,9 +198,7 @@ function update(source) {
                         .attr("d", d => line([d.source, d.target]))
 
    link.exit().transition(transitions).remove()
-      .attr("d", d => {
-         return line([d.source, d.target])
-      })
+               .attr("d", d => line([d.source, d.target]))
 
    const linkLabel = glinkLabel.selectAll("textPath")
                      .data(links, d => d.target.id)
