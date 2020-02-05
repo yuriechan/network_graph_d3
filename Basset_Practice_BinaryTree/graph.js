@@ -159,7 +159,7 @@ function update(source) {
                .data(nodes, d => d.id)
 
    const nodeEnter = node.enter().append("g")
-                     .attr("transform", d => `translate(${source.x0}, ${source.y0})`)
+                     .attr("transform", d => `translate(${source.x}, ${source.y})`)
                      .attr("fill-opacity", 0.5) // later change it to 0
                      .attr("stroke-opacity", 0.5) // later change it to 0
                      .on("click", d => {
