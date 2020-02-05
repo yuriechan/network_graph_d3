@@ -114,14 +114,10 @@ const gLink = canvas.append("g")
                .attr("stroke-width", 1.5)
 
 const glinkLabel = canvas.append("g")
-                     .attr("id", "linkLabels")
-                     .attr("class", "linkLabels")
+                              .attr("id", "linkLabels")
+                              .attr("class", "linkLabels")
                         .append("text")
-                              .attr("class", "linkLabel")
-                        .append("textPath")
-                              .attr("fill", "#BAEA")
-                              .attr("dy", "5")
-                              .attr("startOffset", "50%")
+                              .attr("class", "linkLabel")                             
 
 const arrowheads = d3.select("svg")
                 .append('defs')
@@ -191,21 +187,13 @@ function update(source) {
                 
    const link = gLink.selectAll("path")
                .data(links, d => d.target.id)
-               .attr("id", (d, i) => `linkPath${i}`)
                .attr("d", d => line(d.source, d.target))
-
-   const linkLabel = glinkLabel.selectAll("textPath")
-                     .data(links)
-                     .enter()
-                     .attr("xlink:href", (d, i) => `#linkPath${i}`)
-                     .attr("x", d => d.source.x + (d.target.x - d.source.x) * 0.8)
-                     .attr("y", d => d.source.y + (d.target.y - d.source.y) * 0.8)
-                     .text( d => d.source.data.amounts[1].amount)
    
    const linkEnter = link.enter().append("path")
                         .attr("d", d => {
                            return line(d.source, d.target)
                         })
+                        .attr("id", (d, i) => `linkPath${i}`)
                         .attr("marker-end", 'url(#arrowHead)')
 
    link.merge(linkEnter).transition(transitions)
@@ -217,6 +205,18 @@ function update(source) {
       .attr("d", d => {
          return line([d.source, d.target])
       })
+
+   const linkLabel = glinkLabel.selectAll("textPath")
+                     .data(links, d => d.target.id)
+
+   const linkLabelEnter = linkLabel.enter().append("textPath")
+                           .attr("x", d => d.source.x + (d.target.x - d.source.x) * 0.8)
+                           .attr("y", d => d.source.y + (d.target.y - d.source.y) * 0.8)
+                           .text( d => d.source.data.amounts[1].amount)
+                           .attr("xlink:href", (d, i) => `#linkPath${i}`)
+                           .attr("fill", "#BAEA")
+                           .attr("dy", "5")
+                           .attr("startOffset", "50%")
 }
 
 update(root);
