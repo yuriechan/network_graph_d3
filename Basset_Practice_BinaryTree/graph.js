@@ -187,19 +187,15 @@ function update(source) {
                 
    const link = gLink.selectAll("path")
                .data(links, d => d.target.id)
-               .attr("d", d => line(d.source, d.target))
+               .attr("d", d => line([d.source, d.target]))
    
    const linkEnter = link.enter().append("path")
-                        .attr("d", d => {
-                           return line(d.source, d.target)
-                        })
+                        .attr("d", d => line([d.source, d.target]))
                         .attr("id", (d, i) => `linkPath${i}`)
                         .attr("marker-end", 'url(#arrowHead)')
 
    link.merge(linkEnter).transition(transitions)
-                        .attr("d", d => {
-                           return line([d.source, d.target])
-                        })
+                        .attr("d", d => line([d.source, d.target]))
 
    link.exit().transition(transitions).remove()
       .attr("d", d => {
