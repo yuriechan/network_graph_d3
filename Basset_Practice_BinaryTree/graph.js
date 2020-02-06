@@ -75,16 +75,17 @@ const data = {
  }
 
  // set margin for layouts
- const margin = { top: 30, right: 30, bottom: 30, left: 40},
- width = 500 - margin.left - margin.right,
- height = 500 - margin.top - margin.bottom
+ const margin = { top: 30, right: 30, bottom: 30, left: 30}
+ let width = 900 - margin.right - margin.left
+ let height = 900 - margin.top - margin.bottom
 
 
  // set children to null, to only display the root node
-   // root 
+   // root, and its fixed coodinate
    const root = d3.hierarchy(data)
-   root.x0 = 0
+   root.x0 = width / 2
    root.y0 = 0
+   let tree_d3 = d3.tree().nodeSize([height, width])
  
 
 // children
@@ -97,10 +98,7 @@ const data = {
  // canvas
  let canvas = d3.select("body")
                 .append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                    .attr("viewBox", [-root.x0, -margin.top, width, height])
 
 const gNode = canvas.append("g")
                .attr("class", "node")
@@ -142,13 +140,24 @@ function update(source) {
    const nodes = root.descendants().reverse()
    const links = root.links()
 
+
    // Compute the new tree layout
-   let tree_d3 = d3.tree().size([height, width])
    tree_d3(root)
+
+   // x y coordinates of tree 
+   let smallestX = root.x
+   let biggestY = root.y
+
+   root.eachBefore( node => {
+      if (node.x < smallestX) smallestX = node.x
+      if (node.y > biggestY) biggestY = node.y
+   })
+
+   tree_d3 = d3.tree().nodeSize([height/3, width/3])
 
    //transitions
    const transitions = canvas.transition()
-                     .duration(duration)
+                        .duration(duration)
 
    // update, enter, exit for nodes
    const node = gNode.selectAll("g")
