@@ -85,7 +85,7 @@ const data = {
    const root = d3.hierarchy(data)
    root.x0 = width / 2
    root.y0 = 0
-   let tree_d3 = d3.tree().nodeSize([height, width])
+   let tree_d3 = d3.tree().nodeSize([width - margin.right - margin.left, height - margin.top - margin.bottom])
  
 
 // children
@@ -143,17 +143,7 @@ function update(source) {
 
    // Compute the new tree layout
    tree_d3(root)
-
-   // x y coordinates of tree 
-   let smallestX = root.x
-   let biggestY = root.y
-
-   root.eachBefore( node => {
-      if (node.x < smallestX) smallestX = node.x
-      if (node.y > biggestY) biggestY = node.y
-   })
-
-   tree_d3 = d3.tree().nodeSize([height/3, width/3])
+   tree_d3 = d3.tree().nodeSize([(width - margin.right - margin.left)/3, (height - margin.top - margin.bottom)/3])
 
    //transitions
    const transitions = canvas.transition()
