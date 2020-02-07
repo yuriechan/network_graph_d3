@@ -1,9 +1,3 @@
-const bro = (greeting) => {
-    return `${greeting}, bro`
-}
-
-export { bro }
-
 // original data
 const transactions = [
     { source: 0, targets: [1, 2], amounts: [1.5, 0.5] },
@@ -17,8 +11,6 @@ let tree = {
     children: [],
     amounts: []
 }
-
-const binaryTree = createTree()
 
 function createTree () {
     let root = createRoot(transactions[0])
@@ -104,4 +96,5 @@ function createRightChild (childObj) {
     }
 }
 
+export { transactions, createTree, createRoot, createLeftChild, createRightChild }
 

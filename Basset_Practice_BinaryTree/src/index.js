@@ -1,7 +1,6 @@
-import { bro } from './tree'
+import { transactions, createTree, createRoot, createLeftChild, createRightChild } from './tree'
 import * as d3 from 'd3'
 
-console.log(bro('Sup'))
 
 const data = {
     "name":0,
