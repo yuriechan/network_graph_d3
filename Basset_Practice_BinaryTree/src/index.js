@@ -1,4 +1,6 @@
 import { bro } from './tree'
+import * as d3 from 'd3'
+
 console.log(bro('Sup'))
 
 const data = {

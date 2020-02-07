@@ -8,7 +8,7 @@
     "start:dev": "webpack-dev-server"
   },
   "keywords": [],
-  "author": "",
+  "author": "Yurie Egawa",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -20,5 +20,8 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "d3": "^5.15.0"
   }
 }
