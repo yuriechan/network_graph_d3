@@ -5,6 +5,23 @@ const transactions = [
     { source: 3, targets: [5, 6], amounts: [0.8, 0.2] }
 ]
 
+let makeTree = (transactions, parent) => {
+   let node = {}
+   node.source = parent
+   node.children = []
+   node.amounts = []
+   transactions.filter(trsc => {return trsc.source === parent})
+               .forEach(trsc => {
+                    trsc.amounts.forEach(amt => {
+                        node.amounts.push(amt)
+                    })
+                    trsc.targets.forEach(targ => {
+                       node.children.push(makeTree(transactions, targ))
+                    })
+                })
+   return node
+}
+console.log(JSON.stringify(makeTree(transactions, 0), null, 2))
 // final data, ready for d3 tree()
 let tree = {
     name: "",
@@ -12,13 +29,13 @@ let tree = {
     amounts: []
 }
 
-function createTree () {
-    let root = createRoot(transactions[0])
-    createLeftChild(root.children[0])
-    createRightChild(root.children[1])
-    console.log(JSON.stringify(root))
-    return root
-}
+// function createTree () {
+//     let root = createRoot(transactions[0])
+//     createLeftChild(root.children[0])
+//     createRightChild(root.children[1])
+//     console.log(JSON.stringify(root))
+//     return root
+// }
 
 // helper function 1 
 function createRoot (obj) {
@@ -96,5 +113,5 @@ function createRightChild (childObj) {
     }
 }
 
-export { transactions, createTree, createRoot, createLeftChild, createRightChild }
+//module.export  = { transactions, createTree, createRoot, createLeftChild, createRightChild }
 
