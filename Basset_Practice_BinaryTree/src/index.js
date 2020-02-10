@@ -1,82 +1,5 @@
-import { transactions, createTree, createRoot, createLeftChild, createRightChild } from './tree'
+import { transactions, makeTree, treeData } from './tree'
 import * as d3 from 'd3'
-
-
-const data = {
-    "name":0,
-    "children":[
-       {
-          "name":1,
-          "children":[
-             {
-                "name":3,
-                "children":[
-                   {
-                      "name":5,
-                      "children":[
- 
-                      ],
-                      "amounts":[
- 
-                      ]
-                   },
-                   {
-                      "name":6,
-                      "children":[
- 
-                      ],
-                      "amounts":[
- 
-                      ]
-                   }
-                ],
-                "amounts":[
-                   {
-                      "amount":0.8
-                   },
-                   {
-                      "amount":0.2
-                   }
-                ]
-             },
-             {
-                "name":4,
-                "children":[
- 
-                ],
-                "amounts":[
- 
-                ]
-             }
-          ],
-          "amounts":[
-             {
-                "amount":1.2
-             },
-             {
-                "amount":0.3
-             }
-          ]
-       },
-       {
-          "name":2,
-          "children":[
- 
-          ],
-          "amounts":[
- 
-          ]
-       }
-    ],
-    "amounts":[
-       {
-          "amount":1.5
-       },
-       {
-          "amount":0.5
-       }
-    ]
- }
 
  // set margin for layouts
  const margin = { top: 30, right: 30, bottom: 30, left: 30}
@@ -86,12 +9,11 @@ const data = {
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
-   const root = d3.hierarchy(data)
+   const root = d3.hierarchy(treeData)
    root.x0 = width / 2
    root.y0 = 0
    let tree_d3 = d3.tree().nodeSize([width - margin.right - margin.left, height - margin.top - margin.bottom])
  
-
 // children
    root.descendants().forEach((d, i) => {
       d.id = i
