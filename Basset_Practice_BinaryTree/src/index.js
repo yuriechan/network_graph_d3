@@ -2,18 +2,19 @@ import { makeTree, treeData } from './tree'
 import { cluster, transactions } from './data'
 import * as d3 from 'd3'
 
+
  // set margin for layouts
  const margin = { top: 20, right: 120, bottom: 20, left: 120}
- let width = 1200 - margin.right - margin.left
- let height = 1200 - margin.top - margin.bottom
+ let width = 1000 - margin.right - margin.left
+ let height = 1000 - margin.top - margin.bottom
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
-   const root = d3.hierarchy(treeData)
+   const root = d3.hierarchy(cluster)
    root.x0 = width / 2
    root.y0 = 0
-   let tree_d3 = d3.tree().nodeSize([width, height])
- 
+   let tree_d3 = d3.tree().size([width - margin.right, height - margin.top])
+   
 // children
    root.descendants().forEach((d, i) => {
       d._id = i
@@ -24,9 +25,11 @@ import * as d3 from 'd3'
  // canvas
  let canvas = d3.select("body")
                 .append("svg")
+                     .attr("id", "canvas")
                      .attr("height", "90%")
                      .attr("width", "90%")
-                    .attr("viewBox", [-(width + root.x0)/2 , -margin.top, width + root.x0, height + margin.top])
+                     .attr("preserveAspectRatio", "xMinYMin meet")
+                     .attr("viewBox", [-(width + root.x0)/2 , -margin.top, width + root.x0, height + margin.top])
 
 const gNode = canvas.append("g")
                .attr("class", "node")
@@ -63,6 +66,12 @@ const arrowheads = d3.select("svg")
 
                     
 function update(source) {
+   // DOM width && height
+    // select parent SVG (canvas)
+   let gCanvas = document.getElementById("canvas")
+   let canvasWidth = gCanvas.clientWidth
+   let canvasHeight = gCanvas.clientHeight
+
    // durations for animation
    const duration = d3.event ? 250 : 0;
    const nodes = root.descendants().reverse()
@@ -82,11 +91,19 @@ function update(source) {
       }
    }
    childCount(root, 0)
-   let newHeight = d3.max(levelWidth) * 20
+   let newHeight = d3.max(levelWidth) * 60
+   //let newWidth = levelWidth.length * 100
+   // alert(levelWidth)
    // Compute the new tree layout
    tree_d3(root)
-   //tree_d3 = d3.tree().nodeSize([height/3, width/3])
-   tree_d3 = d3.tree().nodeSize([width - margin.right, height/levelWidth.length - margin.top])
+      // There is two ways to scale, either scale to the full viewbox
+   //tree_d3 = d3.tree().size([width, height - margin.bottom])
+      // advantage) it may look bad 
+      // or, incrementally expand within viewbox
+         // advantage) it looks good
+         // disadvantage) the viewport will increase as node level increases
+   tree_d3 = d3.tree().size([width, newHeight])
+   //tree_d3 = d3.tree().size([width - margin.right, height/levelWidth.length - margin.top])
 
    //transitions
    const transitions = canvas.transition()
