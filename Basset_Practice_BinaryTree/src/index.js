@@ -1,22 +1,22 @@
-import { transactions, makeTree, treeData } from './tree'
+import { makeTree, treeData } from './tree'
+import { cluster, transactions } from './data'
 import * as d3 from 'd3'
 
  // set margin for layouts
- const margin = { top: 30, right: 30, bottom: 30, left: 30}
- let width = 900 - margin.right - margin.left
- let height = 900 - margin.top - margin.bottom
-
+ const margin = { top: 20, right: 120, bottom: 20, left: 120}
+ let width = 1200 - margin.right - margin.left
+ let height = 1200 - margin.top - margin.bottom
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
    const root = d3.hierarchy(treeData)
    root.x0 = width / 2
    root.y0 = 0
-   let tree_d3 = d3.tree().nodeSize([width - margin.right - margin.left, height - margin.top - margin.bottom])
+   let tree_d3 = d3.tree().nodeSize([width, height])
  
 // children
    root.descendants().forEach((d, i) => {
-      d.id = i
+      d._id = i
       d._children = d.children
       if (d.depth !== 4) d.children = null
    })
@@ -24,7 +24,9 @@ import * as d3 from 'd3'
  // canvas
  let canvas = d3.select("body")
                 .append("svg")
-                    .attr("viewBox", [-root.x0, -margin.top, width, height])
+                     .attr("height", "90%")
+                     .attr("width", "90%")
+                    .attr("viewBox", [-(width + root.x0)/2 , -margin.top, width + root.x0, height + margin.top])
 
 const gNode = canvas.append("g")
                .attr("class", "node")
@@ -66,10 +68,25 @@ function update(source) {
    const nodes = root.descendants().reverse()
    const links = root.links()
 
-
+   // calculate max height of current graph
+   let levelWidth = [1]
+   let counter = 0
+   let childCount = function (n, level) {
+      if (n.children && n.children.length > 0) {
+         console.log(n.children.length)
+         if (levelWidth.length <= level + 1) levelWidth.push(0)
+         levelWidth[level + 1] += n.children.length
+         n.children.forEach(function(d) {
+            childCount(d, level + 1)
+         })
+      }
+   }
+   childCount(root, 0)
+   let newHeight = d3.max(levelWidth) * 20
    // Compute the new tree layout
    tree_d3(root)
-   tree_d3 = d3.tree().nodeSize([(width - margin.right - margin.left)/3, (height - margin.top - margin.bottom)/3])
+   //tree_d3 = d3.tree().nodeSize([height/3, width/3])
+   tree_d3 = d3.tree().nodeSize([width - margin.right, height/levelWidth.length - margin.top])
 
    //transitions
    const transitions = canvas.transition()
@@ -77,7 +94,7 @@ function update(source) {
 
    // update, enter, exit for nodes
    const node = gNode.selectAll("g")
-               .data(nodes, d => d.id)
+               .data(nodes, d => d._id)
 
    const nodeEnter = node.enter().append("g")
                      .attr("transform", d => `translate(${source.x}, ${source.y})`)
