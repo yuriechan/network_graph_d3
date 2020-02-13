@@ -38,7 +38,6 @@ function update(source) {
 
    // calculate max height of current graph
    let levelWidth = [1]
-   let counter = 0
    let childCount = function (n, level) {
       if (n.children && n.children.length > 0) {
          if (levelWidth.length <= level + 1) levelWidth.push(0)
@@ -73,10 +72,12 @@ function update(source) {
    const nodeEnter = node.enter().append("g")
                      .attr("transform", d => `translate(${source.x}, ${source.y})`)
                      .on("click", d => {
-                        d.children = d.children ? null : d._children
-                        console.log('after click')
-                        console.log(levelWidth)
-                        console.log(levelWidth.length * 50)
+                        if (d.children) {
+                           d.children.forEach(d => (d.children) ? d.children = null : null)
+                           d.children = null
+                        } else {
+                           d.children = d._children
+                        }
                         update(d)
                      })
 
