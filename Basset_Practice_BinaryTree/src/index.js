@@ -8,6 +8,8 @@ import * as d3 from 'd3'
  const margin = { top: 20, right: 40, bottom: 20, left: 40}
  let width = 1000 - margin.right - margin.left
  let height = 1000 - margin.top - margin.bottom
+ const expandHeight = 150;
+ const expandWidth = 10;
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
@@ -47,17 +49,17 @@ function update(source) {
       }
    }
    childCount(root, 0)
-   let newHeight = d3.max(levelWidth) * 60
+   let newWidth = d3.max(levelWidth) * expandWidth
 
    // Compute the new tree layout
-   tree_d3 = d3.tree().size([width, (levelWidth.length - 1) * 300])
+   tree_d3 = d3.tree().size([width + newWidth, (levelWidth.length - 1) * expandHeight])
    tree_d3(root)
 
    // Resize the viewBox
    let svg = d3.select("svg")
-            .attr("height", height + (levelWidth.length - 1) * 60)
-   //             .attr("width", width)
-            .attr("viewBox", [-margin.right , -margin.top, width + margin.right, height + margin.top + (levelWidth.length - 1) * 60])
+            .attr("height", 100 + (levelWidth.length - 1) * expandHeight)
+            .attr("width", width + newWidth)
+            .attr("viewBox", [-margin.right , -margin.top, width + newWidth + margin.right, 100 + margin.top + (levelWidth.length - 1) * expandHeight])
                
 
    //transitions
