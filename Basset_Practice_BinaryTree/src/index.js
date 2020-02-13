@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 
 
  // set margin for layouts
- const margin = { top: 20, right: 120, bottom: 20, left: 120}
+ const margin = { top: 20, right: 40, bottom: 20, left: 40}
  let width = 1000 - margin.right - margin.left
  let height = 1000 - margin.top - margin.bottom
 
@@ -13,7 +13,7 @@ import * as d3 from 'd3'
    const root = d3.hierarchy(cluster)
    root.x0 = width / 2
    root.y0 = 0
-   let tree_d3 = d3.tree().size([width - margin.right, height - margin.top])
+   let tree_d3 = d3.tree().size([width, height])
    
 // children
    root.descendants().forEach((d, i) => {
@@ -26,10 +26,9 @@ import * as d3 from 'd3'
  let canvas = d3.select("body")
                 .append("svg")
                      .attr("id", "canvas")
-                     .attr("height", "90%")
-                     .attr("width", "90%")
-                     .attr("preserveAspectRatio", "xMinYMin meet")
-                     .attr("viewBox", [-(width + root.x0)/2 , -margin.top, width + root.x0, height + margin.top])
+                     .attr("height", height)
+                     .attr("width", width)
+                     .attr("viewBox", [-margin.right , -margin.top, width + margin.right, height + margin.top])
 
 const gNode = canvas.append("g")
                .attr("class", "node")
