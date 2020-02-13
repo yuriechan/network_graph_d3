@@ -84,23 +84,17 @@ function update(source) {
    }
    childCount(root, 0)
    let newHeight = d3.max(levelWidth) * 60
-   //console.log('before click')
-   //console.log(levelWidth)
-   //console.log(levelWidth.length * 50)
-   //let newWidth = levelWidth.length * 100
 
    // Compute the new tree layout
-  
-      // There is two ways to scale, either scale to the full viewbox
-   //tree_d3 = d3.tree().size([width, height - margin.bottom])
-      // advantage) it may look bad 
-      // or, incrementally expand within viewbox
-         // advantage) it looks good
-         // disadvantage) the viewport will increase as node level increases
-   tree_d3 = d3.tree().size([width, (levelWidth.length - 1) * 60])
+   tree_d3 = d3.tree().size([width, (levelWidth.length - 1) * 300])
    tree_d3(root)
-   //alert(height + (levelWidth.length - 1) * 60)
-   //tree_d3 = d3.tree().size([width - margin.right, height/levelWidth.length - margin.top])
+
+   // Resize the viewBox
+   let svg = d3.select("svg")
+            .attr("height", height + (levelWidth.length - 1) * 60)
+   //             .attr("width", width)
+            .attr("viewBox", [-margin.right , -margin.top, width + margin.right, height + margin.top + (levelWidth.length - 1) * 60])
+               
 
    //transitions
    const transitions = canvas.transition()
