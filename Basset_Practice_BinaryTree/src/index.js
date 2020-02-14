@@ -35,6 +35,7 @@ function update(source) {
    const duration = d3.event ? 250 : 0;
    const nodes = root.descendants().reverse()
    const links = root.links()
+   console.log(nodes)
 
    // calculate max height of current graph
    let levelWidth = [1]
@@ -83,7 +84,8 @@ function update(source) {
 
    nodeEnter.append("circle")
             .attr("r", 10)
-            .attr("fill", d => d._children ? "#04ab5b" : "#ADAD")
+            .attr("fill", d => d.data._color ? d.data._color : d.data._defColor)
+            .attr("class", d => d.data._cssClass ? d.data._cssClass : null)
    
    nodeEnter.append("text")
             .text( d => d.data.name )
