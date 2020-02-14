@@ -5,14 +5,14 @@ let cluster = clusterJSON
 
 // data structure  to be used in graphing
 let clusterGraphData = {}
-console.log(setClusterObject(cluster))
+setClusterObject(cluster)
 
 // helper 
 function setClusterObject (cluster) {    
     //Set Graph Visualization Data
     clusterGraphData.nodes = []
     clusterGraphData.links = []
-    clusterGraphData.nodes.push({ id: cluster.clusterId, name: cluster.realWorldIdentity, identity: cluster.realWorldIdentity, _color: colors[cluster.category], _cssClass: 'border-black' })
+    clusterGraphData.nodes.push({ id: cluster.clusterId, name: cluster.realWorldIdentity, identity: cluster.realWorldIdentity, _color: colors[cluster.category], _cssClass: 'border-black', children: []})
 
     //Node Customization Logic
     for (const neighbor of cluster.neighbors) {
@@ -21,9 +21,12 @@ function setClusterObject (cluster) {
         node = { id: neighbor.clusterId, name: neighbor.label, category: neighbor.category, _color: colors[neighbor.category], _defColor: '#C0C6DD', _cssClass: 'heavy-neighbour' }
       else
         node = { id: neighbor.clusterId, name: neighbor.label, category: neighbor.category, _color: colors[neighbor.category], _defColor: '#C0C6DD', _cssClass: '' }
+      
       let link = { sid: cluster.clusterId, tid: neighbor.clusterId, name: insertDecimal(neighbor.receivedAmount + neighbor.sentAmount), _color: 'black' }
+      node.transactionAmount = insertDecimal(neighbor.receivedAmount + neighbor.sentAmount)
       node.identity = node.name
-      clusterGraphData.nodes.push(node)
+     
+      clusterGraphData.nodes[0].children.push(node)
       clusterGraphData.links.push(link)
     }
     return clusterGraphData
@@ -43,3 +46,4 @@ function insertDecimal (long) {
   }
 
 
+export { clusterGraphData }
