@@ -3,13 +3,12 @@ import { cluster, transactions } from './data'
 import { canvas, gNode, gLink, glinkLabel, arrowheads } from './svg'
 import * as d3 from 'd3'
 
-
  // set margin for layouts
  const margin = { top: 20, right: 40, bottom: 20, left: 40}
  let width = 1000 - margin.right - margin.left
  let height = 1000 - margin.top - margin.bottom
  const expandHeight = 150;
- const expandWidth = 10;
+ const expandWidth = expandHeight / 10;
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
