@@ -35,7 +35,6 @@ function update(source) {
    const duration = d3.event ? 250 : 0;
    const nodes = root.descendants().reverse()
    const links = root.links()
-   console.log(nodes)
 
    // calculate max height of current graph
    let levelWidth = [1]
@@ -89,8 +88,10 @@ function update(source) {
    
    nodeEnter.append("text")
             .text( d => d.data.name )
+               .attr("class", "node-label")
+               .attr("text-anchor", "start")
+               .attr("transform", "translate(17, 5)")
                .clone(true).lower()
-               .attr("stroke-width", 3)
 
    const nodeUpdate = node.merge(nodeEnter).transition(transitions)
                   .attr("transform", d => `translate(${d.x}, ${d.y})`)
