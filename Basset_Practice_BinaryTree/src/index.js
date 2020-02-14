@@ -35,6 +35,7 @@ function update(source) {
    const duration = d3.event ? 250 : 0;
    const nodes = root.descendants().reverse()
    const links = root.links()
+   console.log(links)
 
    // calculate max height of current graph
    let levelWidth = [1]
@@ -129,9 +130,9 @@ function update(source) {
    const linkLabelEnter = linkLabel.enter().append("textPath")
                            .attr("x", d => d.source.x + (d.target.x - d.source.x) * 0.8)
                            .attr("y", d => d.source.y + (d.target.y - d.source.y) * 0.8)
-                           .text( d => d.source.data.amounts[1].amount)
+                           .text( d => d.target.data.transactionAmount)
                            .attr("xlink:href", (d, i) => `#linkPath${i}`)
-                           .attr("fill", "#BAEA")
+                           .attr("class", "link-label")
                            .attr("dy", "5")
                            .attr("startOffset", "50%")
 }
