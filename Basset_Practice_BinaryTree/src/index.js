@@ -1,6 +1,7 @@
 import { makeTree, treeData } from './tree'
 import { cluster, transactions } from './data'
 import { canvas, gNode, gLink, glinkLabel, arrowheads } from './svg'
+import { clusterGraphData } from './cluster'
 import * as d3 from 'd3'
 
  // set margin for layouts
@@ -12,7 +13,7 @@ import * as d3 from 'd3'
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
-   const root = d3.hierarchy(cluster)
+   const root = d3.hierarchy(clusterGraphData.nodes[0])
    root.x0 = width / 2
    root.y0 = 0
    let tree_d3 = d3.tree().size([width, height])
