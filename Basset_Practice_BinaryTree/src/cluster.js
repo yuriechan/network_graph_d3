@@ -25,10 +25,18 @@ function setClusterObject (cluster) {
       let link = { sid: cluster.clusterId, tid: neighbor.clusterId, name: insertDecimal(neighbor.receivedAmount + neighbor.sentAmount), _color: 'black' }
       node.transactionAmount = insertDecimal(neighbor.receivedAmount + neighbor.sentAmount)
       node.identity = node.name
-     
+      node.children = (neighbor.children) ? neighbor.children : null 
+
+      if (node.children) {
+        // remove the first object in the array (bc the first item is itself)
+        node.children.splice(0,1)
+        // remove the parent item from the children array 
+        node.children = node.children.filter(e => parseInt(clusterGraphData.nodes[0].id) !== parseInt(e.id))
+      }
       clusterGraphData.nodes[0].children.push(node)
       clusterGraphData.links.push(link)
     }
+    //console.log(clusterGraphData)
     return clusterGraphData
 }
 
@@ -46,4 +54,4 @@ function insertDecimal (long) {
   }
 
 
-export { clusterGraphData }
+export { clusterGraphData, insertDecimal }
