@@ -1,5 +1,3 @@
-import { makeTree, treeData } from './tree'
-import { cluster, transactions } from './data'
 import { canvas, gNode, gLink, glinkLabel, arrowheads } from './svg'
 import { clusterGraphData } from './cluster'
 import * as d3 from 'd3'
@@ -9,20 +7,22 @@ import * as d3 from 'd3'
  let width = 1000 - margin.right - margin.left
  let height = 1000 - margin.top - margin.bottom
  const expandHeight = 150;
- const expandWidth = expandHeight / 10;
+ const expandWidth = expandHeight * 2;
 
  // set children to null, to only display the root node
    // root, and its fixed coodinate
    const root = d3.hierarchy(clusterGraphData.nodes[0])
-   root.x0 = width / 2
-   root.y0 = 0
    let tree_d3 = d3.tree().size([width, height])
    
 // children
    root.descendants().forEach((d, i) => {
       d._id = i
       d._children = d.children
-      if (d.depth !== 4) d.children = null
+      if (d._id === 0) {
+         d.fx = null
+         d.fy = null
+      }
+      if (d.depth >= 0) d.children = null
    })
  
  // canvas
@@ -35,8 +35,6 @@ function update(source) {
    const duration = d3.event ? 250 : 0;
    const nodes = root.descendants().reverse()
    const links = root.links()
-   console.log(links)
-
    // calculate max height of current graph
    let levelWidth = [1]
    let childCount = function (n, level) {
@@ -50,18 +48,15 @@ function update(source) {
    }
    childCount(root, 0)
    let newWidth = d3.max(levelWidth) * expandWidth
-
    // Compute the new tree layout
    tree_d3 = d3.tree().size([width + newWidth, (levelWidth.length - 1) * expandHeight])
    tree_d3(root)
-
    // Resize the viewBox
    let svg = d3.select("svg")
             .attr("height", 100 + (levelWidth.length - 1) * expandHeight)
             .attr("width", width + newWidth)
             .attr("viewBox", [-margin.right , -margin.top, width + newWidth + margin.right, 100 + margin.top + (levelWidth.length - 1) * expandHeight])
                
-
    //transitions
    const transitions = canvas.transition()
                         .duration(duration)
@@ -74,7 +69,7 @@ function update(source) {
                      .attr("transform", d => `translate(${source.x}, ${source.y})`)
                      .on("click", d => {
                         if (d.children) {
-                           d.children.forEach(d => (d.children) ? d.children = null : null)
+                           //d.children.forEach(d => (d.children) ? d.children = null : null)
                            d.children = null
                         } else {
                            d.children = d._children
