@@ -31,12 +31,12 @@ function setClusterObject (cluster) {
         // remove the first object in the array (bc the first item is itself)
         node.children.splice(0,1)
         // remove the parent item from the children array 
-        node.children = node.children.filter(e => parseInt(clusterGraphData.nodes[0].id) !== parseInt(e.id))
+        let filteredChildArr = node.children.filter(e => parseInt(clusterGraphData.nodes[0].id) !== parseInt(e.id))
+        node.children.splice(0, node.children.length, ...filteredChildArr)
       }
       clusterGraphData.nodes[0].children.push(node)
       clusterGraphData.links.push(link)
     }
-    //console.log(clusterGraphData)
     return clusterGraphData
 }
 
