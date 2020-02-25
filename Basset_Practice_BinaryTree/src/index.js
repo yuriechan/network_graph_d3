@@ -55,7 +55,7 @@ function update(source) {
    let svg = d3.select("svg")
             .attr("height", 100 + (levelWidth.length - 1) * expandHeight)
             .attr("width", width + newWidth)
-            .attr("viewBox", [-margin.right , -margin.top, width + newWidth + margin.right, 100 + margin.top + (levelWidth.length - 1) * expandHeight])
+            .attr("viewBox", [-margin.right , -margin.top, width + newWidth + margin.right + margin.left, margin.bottom + margin.top + (levelWidth.length - 1) * expandHeight])
                
    //transitions
    const transitions = canvas.transition()
