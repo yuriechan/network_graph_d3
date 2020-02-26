@@ -1,10 +1,9 @@
-import { canvas, gNode, gLink, glinkLabel } from './svg'
 import { clusterGraphData } from './cluster'
 import { toggleAll, toggle } from './helpers'
 import * as d3 from 'd3'
 
  // **
- const margin = { top: 20, right: 120, bottom: 20, left: 120}
+ const margin = { top: 40, right: 120, bottom: 40, left: 120}
  let width = 1280 - margin.right - margin.left
  let height = 800 - margin.top - margin.bottom
  let i = 0
@@ -13,10 +12,11 @@ import * as d3 from 'd3'
  const root = d3.hierarchy(clusterGraphData.nodes[0])
  let tree_d3 = d3.tree().size([width, height])
    
-   // not used yet 
-   let verticalLink = d3.linkVertical()
-                        .x(function (d) { return d.x })
-                        .y(function (d) { return d.y }) 
+// not used yet 
+// let verticalLink = d3.linkVertical()
+//                      .x(function (d) { return d.x })
+//                      .y(function (d) { return d.y }) 
+
 // **
    let vis = d3.select("#body")
                .append("svg")
@@ -25,6 +25,29 @@ import * as d3 from 'd3'
                   .attr("height", height + margin.top + margin.bottom)
                .append("g")
                   .attr("transform", `translate(${margin.left}, ${margin.top})`)
+
+   const arrowheads = d3.select("svg")
+                        .append('defs')
+                        .append('marker')
+                              .attr('id', 'arrowHead')
+                              .attr('viewBox', '-0 -5 10 10')
+                              .attr('refX', 23)
+                              .attr('refY', 0)
+                              .attr('orient', 'auto')
+                              .attr('markerWidth', 8)
+                              .attr('markerHeight', 8)
+                              .attr('xoverflow', 'visible')
+                        .append('avg:path')
+                              .attr('d', 'M 0, -5 L 10,0 L 0,5')
+                              .attr('fill', '#ADADAD')
+                              .style('stroke', 'none')
+
+   const glinkLabel = vis.append("g")
+                              .attr("id", "linkLabels")
+                              .attr("class", "linkLabels")
+                           .append("text")
+                              .attr("class", "linkLabel")   
+
 // **
    root.x0 = width / 2
    root.y0 = 0
@@ -36,7 +59,7 @@ import * as d3 from 'd3'
                     
 function update(source) {
    // **
-   const duration = d3.event ? 2500 : 0;
+   const duration = d3.event ? 250 : 0;
  
    // **
    let levelWidth = [1]
@@ -52,7 +75,7 @@ function update(source) {
    childCount(root, 0)
    let newWidth = d3.max(levelWidth) * 20
    let newHeight = levelWidth.length * 180
-
+   console.log(levelWidth)
    // **
    tree_d3 = d3.tree().size([newWidth, newHeight])
    d3.select("svg.svgCanvas")
@@ -70,7 +93,7 @@ function update(source) {
    })
                
    //transitions
-   const transitions = canvas.transition().duration(duration)
+   const transitions = vis.transition().duration(duration)
 
    // **
    const node = vis.selectAll("g.node")
@@ -79,6 +102,8 @@ function update(source) {
    // **
    const nodeEnter = node.enter().append("svg:g")
                      .attr("class", "node")
+                     .attr("cursor", "pointer")
+                     .attr("pointer-events", "all")
                      .attr("transform", d => `translate(${source.x0}, ${source.y0})`)
                      .on("click", d => {
                         toggle(d)
@@ -96,7 +121,7 @@ function update(source) {
             .text( d => d.data.name )
                .attr("class", "node-label")
                .attr("text-anchor", "start")
-               .attr("transform", "translate(17, 5)")
+               .attr("transform", "translate(-30, -15)")
 
     // ** (not exactly same)
    const nodeUpdate = node.merge(nodeEnter).transition(transitions)
@@ -104,6 +129,7 @@ function update(source) {
                   .attr("fill-opacity", 1)
                   .attr("fill-opacity", 1)
 
+   // **
    const nodeExit = node.exit().transition(transitions).remove()
                   .attr("transform", d => `translate(${source.x}, ${source.y})`)
                   .attr("fill-opacity", 0)
@@ -120,9 +146,20 @@ function update(source) {
    
    const linkEnter = link.enter().insert("svg:path", "g")
                         .attr("class", "link")
-                        .attr("d", d => line([d.source, d.target]))
+                        .attr("fill", "none")
+                        .attr("stroke", "#ADADAD")
+                        .attr("stroke-width", 1.5)
+                        .attr("d", 
+                           d3.line()
+                              .x( d => source.x0 )
+                              .y( d => source.y0 )
+                        )
                         .attr("id", (d, i) => `linkPath${i}`)
                         .attr("marker-end", 'url(#arrowHead)')
+                        .transition(transitions)
+                        .attr("d", function(d){
+                           return line([d.source, d.target])
+                       })
 
    link.merge(linkEnter).transition(transitions)
                         .attr("d", d => line([d.source, d.target]))
