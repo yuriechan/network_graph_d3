@@ -1,4 +1,6 @@
 # ignore dist folder
 dist/
 # ignore node_module folder
-node_module/
+node_modules/
+# ignore data file
+data.js
