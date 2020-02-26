@@ -1,9 +1,16 @@
 import * as d3 from 'd3'
 
+const margin = { top: 20, right: 120, bottom: 20, left: 120}
+let width = 1280 - margin.right - margin.left
+let height = 800 - margin.top - margin.bottom
 
-let canvas = d3.select("body")
+let canvas = d3.select("#body")
                 .append("svg")
-                .attr("id", "canvas")
+                    .attr("class", "svgCanvas")
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                    .attr("transform", `translate(${margin.left}, ${margin.top})`)
 
 const gNode = canvas.append("g")
                .attr("class", "node")
