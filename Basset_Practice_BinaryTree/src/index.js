@@ -75,13 +75,26 @@ function update(source) {
    childCount(root, 0)
    let newWidth = d3.max(levelWidth) * 20
    let newHeight = levelWidth.length * 180
-   console.log(levelWidth)
+
    // **
-   tree_d3 = d3.tree().size([newWidth, newHeight])
-   d3.select("svg.svgCanvas")
+   function treeLayoutResize() {
+      tree_d3 = d3.tree().size([newWidth, newHeight])
+   }
+
+   function svgLayoutResize() {
+      d3.select("svg.svgCanvas")
       .attr("width", newWidth + margin.right + margin.left)
       .attr("height", newHeight + margin.top + margin.bottom)
+   }
 
+   let promise = new Promise((resolve, reject) => {
+      treeLayoutResize()
+   })
+
+   promise.then(() => {
+      svgLayoutResize()
+   })
+  
    // **
    tree_d3(root)
    const nodes = root.descendants().reverse()
@@ -142,7 +155,6 @@ function update(source) {
                 
    const link = vis.selectAll("path.link")
                .data(links, d => d.target.id)
-               //.attr("d", d => line([d.source, d.target]))
    
    const linkEnter = link.enter().insert("svg:path", "g")
                         .attr("class", "link")
