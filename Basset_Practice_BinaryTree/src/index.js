@@ -116,7 +116,7 @@ function update(source) {
    // **
    const nodeEnter = node.enter().append("svg:g")
                      .attr("class", "node")
-                     .attr("cursor", "pointer")
+                     .attr("cursor", d => (d._children) ? "pointer" : "null")
                      .attr("pointer-events", "all")
                      .attr("transform", d => `translate(${source.x0}, ${source.y0})`)
                      .on("click", d => {
