@@ -129,18 +129,24 @@ function update(source) {
             .attr("r", 10)
             .attr("fill", d => d.data._color ? d.data._color : d.data._defColor)
             .attr("class", d => d.data._cssClass ? d.data._cssClass : null)
+            .on("mouseover", function () {
+               d3.select(this.parentNode.lastChild).transition(transitions).style("fill-opacity", 1)
+            })
+            .on("mouseout", function(){
+               d3.select(this.parentNode.lastChild).transition(transitions).style("fill-opacity", 0)
+            })
 
     // ** (not exactly same)
    nodeEnter.append("text")
             .text( d => d.data.name )
                .attr("class", "node-label")
+               .attr("fill-opacity", 0)
                .attr("text-anchor", "start")
                .attr("transform", "translate(-30, -15)")
 
     // ** (not exactly same)
    const nodeUpdate = node.merge(nodeEnter).transition(transitions)
                   .attr("transform", d => `translate(${d.x}, ${d.y})`)
-                  .attr("fill-opacity", 1)
                   .attr("fill-opacity", 1)
 
    // **
