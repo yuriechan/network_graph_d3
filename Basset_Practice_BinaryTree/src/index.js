@@ -31,7 +31,7 @@ import * as d3 from 'd3'
                         .append('marker')
                               .attr('id', 'arrowHead')
                               .attr('viewBox', '-0 -5 10 10')
-                              .attr('refX', 23)
+                              .attr('refX', 19)
                               .attr('refY', 0)
                               .attr('orient', 'auto')
                               .attr('markerWidth', 8)
@@ -136,7 +136,6 @@ function update(source) {
                d3.select(this.parentNode.lastChild).transition().duration(250).style("fill-opacity", 0)
             })
    
-
     // ** (not exactly same)
    nodeEnter.append("text")
             .text( d => d.data.name )
@@ -197,7 +196,7 @@ function update(source) {
                            .attr("xlink:href", (d, i) => `#linkPath${i}`)
                            .attr("class", "link-label")
                            .attr("dy", "5")
-                           .attr("startOffset", "50%")
+                           .attr("startOffset", "40%")
        
    // **
    nodes.forEach(function(d) {
