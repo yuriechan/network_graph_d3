@@ -129,12 +129,13 @@ function update(source) {
             .attr("r", 10)
             .attr("fill", d => d.data._color ? d.data._color : d.data._defColor)
             .attr("class", d => d.data._cssClass ? d.data._cssClass : null)
-            .on("mouseover", function () {
-               d3.select(this.parentNode.lastChild).transition(transitions).style("fill-opacity", 1)
+            .on("mouseover", function (d) {
+               d3.select(this.parentNode.lastChild).transition().duration(250).style("fill-opacity", 1)
             })
-            .on("mouseout", function(){
-               d3.select(this.parentNode.lastChild).transition(transitions).style("fill-opacity", 0)
+            .on("mouseout", function(d){
+               d3.select(this.parentNode.lastChild).transition().duration(250).style("fill-opacity", 0)
             })
+   
 
     // ** (not exactly same)
    nodeEnter.append("text")
