@@ -89,6 +89,7 @@ function update(source) {
 
    let promise = new Promise((resolve, reject) => {
       treeLayoutResize()
+      return resolve()
    })
 
    promise.then(() => {
