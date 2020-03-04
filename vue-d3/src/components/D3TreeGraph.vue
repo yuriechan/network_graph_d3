@@ -2,12 +2,14 @@
     <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
         <g v-bind:style="styleObject.g">
             <g v-for="node in nodes" v-bind:key="node.id" 
-               v-bind:style="{ 'cursor' : ((node._children) ? 'pointer' : null), 'pointer-events' : 'all' , 'transform' : `translate(${root.x0}, ${root.y0})`}" 
-               class="node">
-                <circle v-bind:style="{ 'r' : 10, 'fill' : ((node.data._color) ? node.data._color : node.data._defColor)}">
+               v-bind:style="gNodeCssStyling(node)" 
+               class="node"
+               v-on:click="nodeEnter(node)">
+                <circle v-bind:style="circleCssStyling(node)"
+                        v-bind:class="setClassName(node)">
                 </circle>
                 <text class="node-label"
-                      v-bind:style="{ 'fill-opacity' : 0, 'text-anchor' : 'start', 'transform' : 'translate(-30, -15)'}">
+                      v-bind:style="textNodeCssStyling()">
                     {{ node.data.name }}
                 </text>
             </g>
@@ -49,7 +51,9 @@ export default {
             styleObject: {
                 svgCanvas: {},
                 g: {},
-                gNode: {}
+                gNode: {},
+                circleNode: {},
+                textNode: {}
             },
             duration: Number,
             transitions: null,
@@ -57,7 +61,10 @@ export default {
             nodes: null,
             links: null,
             node: null,
-            link: null
+            link: null,
+            classObject: {
+                gNode: {}
+            }
         }
     },
     methods: {
@@ -177,6 +184,34 @@ export default {
                        // .data(this.nodes, function(d) { return d.id || (d.id = ++this.i); });
 
             //this.node.enter()
+        },
+        setClassName(d) {
+            this.classObject.gNode[d.data._cssClass ? d.data._cssClass : null]
+            this.classObject.gNode[d.data._cssClass] = (Object.keys(this.classObject)) ? true : null
+            return this.classObject.gNode
+        },
+        circleCssStyling(d) {
+            this.styleObject.circleNode.r = 10
+            this.styleObject.circleNode.fill = d.data._color ? d.data._color : d.data._defColor
+            return this.styleObject.circleNode
+        },
+        gNodeCssStyling(d) {
+            this.styleObject.gNode.cursor = d._children ? 'pointer' : null
+            this.styleObject.gNode['pointer-events'] = 'all'
+            this.styleObject.gNode.transform = `translate(${this.root.x0}, ${this.root.y0})`
+            return this.styleObject.gNode
+        },
+        textNodeCssStyling() {
+            this.styleObject.textNode['fill-opacity'] = 0
+            this.styleObject.textNode['text-anchor'] = 'start'
+            this.styleObject.textNode.transform = 'translate(-30px, -15px)'
+            return this.styleObject.textNode
+        },
+        nodeEnter(d) {
+            console.log(d)
+            this.toggle(d)
+            console.log(d)
+            //this.update(d)
         },
         update(source) {
             this.duration = d3.event ? 250 : 0
