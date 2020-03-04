@@ -33,6 +33,7 @@ export default {
             },
             indexID: 0,
             root: null,
+            tree_d3: null,
             styleObject: {
                 svgCanvas: {},
                 g: {}
@@ -91,12 +92,21 @@ export default {
             this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
 
             this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
+        },
+        initializeTreeLayout() {
+            // initialize tree property provided by d3 library (ex. children, parent properties)
+            this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
+            this.root.x0 = this.canvasSize.width / 2
+            this.root.y0 = 0
+            // initialize the size of tree layout 
+            this.tree_d3 = d3.tree().size([this.width, this.height])
         }
     },
     beforeMount() {
         this.setClusterObject(this.testTransactionData)
         this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
         this.setCssStyling()
+        this.initializeTreeLayout()
     }
 }
 </script>
