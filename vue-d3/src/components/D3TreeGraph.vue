@@ -29,7 +29,9 @@ export default {
             },
             canvasSize: {
                 width: 1280,
-                height: 800
+                height: 800,
+                newWidth: Number,
+                newHeight: Number
             },
             indexID: 0,
             root: null,
@@ -37,7 +39,12 @@ export default {
             styleObject: {
                 svgCanvas: {},
                 g: {}
-            }
+            },
+            duration: Number,
+            transitions: null,
+            levelWidth: [1],
+            nodes: null,
+            links: null
         }
     },
     methods: {
@@ -122,8 +129,43 @@ export default {
             this.toggle(this.root)
             console.log('update(root)')
         },
+        childCount(n, level) {
+            if (n.children && n.children.length > 0) {
+                if (this.levelWidth.length <= level + 1) this.levelWidth.push(0)
+                this.levelWidth[level + 1] += n.children.length
+                n.children.forEach(function(d) {
+                    this.childCount(d, level + 1)
+                })
+            }
+        },
+        treeLayoutResize() {
+            // tree expands by 20 px per tree depth
+            this.canvasSize.newWidth = d3.max(this.levelWidth) * 20
+            // tree expands by 180 px per subtree
+            this.canvasSize.newHeight = this.levelWidth.length * 180
+
+            this.tree_d3 = d3.tree().size([this.newWidth, this.newHeight])
+        },
+        svgLayoutResize() {
+            this.styleObject.svgCanvas.width = this.newWidth + this.margin.right + this.margin.left
+            this.styleObject.svgCanvas.height = this.newHeight + this.margin.top + this.margin.bottom
+        },
+        REinitializeTreeLayout() {
+            this.tree_d3(this.root)
+            this.nodes = this.root.descendants().reverse()
+            this.links = this.root.links()
+
+            this.nodes.forEach(function (d) {
+                d.y = d.depth * 180
+            })
+        },
         update(source) {
-            
+            this.duration = d3.event ? 250 : 0
+            this.childCount(this.root, 0)
+            this.treeLayoutResize()
+            this.svgLayoutResize()
+            this.REinitializeTreeLayout()
+            //  const transitions = vis.transition().duration(duration)
         }
     },
     beforeMount() {
