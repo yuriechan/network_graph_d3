@@ -1,6 +1,12 @@
 <template>
-    <svg>
-
+    <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
+        <g v-bind:style="styleObject.g">
+        </g>
+        <defs>
+            <marker id="arrowHead" viewBox="-0 -5 10 10" refX="19" refY="0" orient="auto" markerWidth="8" markerHeight="8" xoverflow="visible">
+                <path d="M 0, -5 L 10,0 L 0,5" fill="#ADADAD" style="stroke: none;"></path>
+            </marker>
+        </defs>
     </svg>
 </template>
 
@@ -14,7 +20,23 @@ export default {
         return {
             testTransactionData: testTransactionData,
             colors: colors,
-            clusterGraphData: {}
+            clusterGraphData: {},
+            margin: {
+                top: 40,
+                right: 120,
+                bottom: 40,
+                left: 120
+            },
+            canvasSize: {
+                width: 1280,
+                height: 800
+            },
+            indexID: 0,
+            root: null,
+            styleObject: {
+                svgCanvas: {},
+                g: {}
+            }
         }
     },
     methods: {
@@ -59,10 +81,22 @@ export default {
             }
             balance = balance.join('')
             return parseFloat(balance)
+        },
+        setCanvasSize(width, height) {
+            this.canvasSize.width = width - this.margin.right - this.margin.left
+            this.canvasSize.height = height - this.margin.top - this.margin.bottom
+        },
+        setCssStyling() {
+            this.styleObject.svgCanvas.width = this.canvasSize.width + this.margin.right + this.margin.left
+            this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
+
+            this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
         }
     },
     beforeMount() {
         this.setClusterObject(this.testTransactionData)
+        this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
+        this.setCssStyling()
     }
 }
 </script>
