@@ -1,12 +1,17 @@
 <template>
     <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
         <g v-bind:style="styleObject.g">
+            <g class="linkLabels" id="LinkLabels">
+                <text class="linkLabel"></text>
+            </g>
             <g v-for="node in nodes" v-bind:key="node.id" 
                v-bind:style="gNodeCssStyling(node)" 
                class="node"
                v-on:click="nodeEnter(node)">
                 <circle v-bind:style="circleCssStyling(node)"
-                        v-bind:class="setClassName(node)">
+                        v-bind:class="setClassName(node)"
+                        v-on:mouseover="labelAppear()"
+                        v-on:mouseout="labelDisappear()">
                 </circle>
                 <text class="node-label"
                       v-bind:style="textNodeCssStyling()">
@@ -207,10 +212,14 @@ export default {
             this.styleObject.textNode.transform = 'translate(-30px, -15px)'
             return this.styleObject.textNode
         },
+        labelAppear(node) {
+            d3.select(".node-label").transition().duration(250).style("fill-opacity", 1)
+        },
+        labelDisappear(node) {
+            d3.select(".node-label").transition().duration(250).style("fill-opacity", 0)
+        },
         nodeEnter(d) {
-            console.log(d)
             this.toggle(d)
-            console.log(d)
             //this.update(d)
         },
         update(source) {
@@ -233,6 +242,8 @@ export default {
         this.setCssStyling()
         this.initializeTreeLayout()
         this.displayTree()
+    },
+    watch: {
     }
 }
 </script>
