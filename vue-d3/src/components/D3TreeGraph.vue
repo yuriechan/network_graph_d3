@@ -94,12 +94,36 @@ export default {
             this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
         },
         initializeTreeLayout() {
-            // initialize tree property provided by d3 library (ex. children, parent properties)
+            // initialize tree property provided by d3 library (ex. children, parent, depth ...etc)
             this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
             this.root.x0 = this.canvasSize.width / 2
             this.root.y0 = 0
             // initialize the size of tree layout 
             this.tree_d3 = d3.tree().size([this.width, this.height])
+        },
+        toggleAll(d) {
+            if (d.children) {
+                d.children.forEach(this.toggleAll)
+                this.toggle(d)
+            }
+        },
+        toggle(d) {
+            if (d.children) {
+                d._children = d.children
+                d.children = null
+            } else {
+                d.children = d._children
+                d._children = null
+            }
+        },
+        displayTree() {
+            // show only root node by default 
+            this.root.children.forEach(this.toggleAll)
+            this.toggle(this.root)
+            console.log('update(root)')
+        },
+        update(source) {
+            
         }
     },
     beforeMount() {
@@ -107,6 +131,7 @@ export default {
         this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
         this.setCssStyling()
         this.initializeTreeLayout()
+        this.displayTree()
     }
 }
 </script>
