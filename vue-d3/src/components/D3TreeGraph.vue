@@ -1,6 +1,16 @@
 <template>
     <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
         <g v-bind:style="styleObject.g">
+            <g v-for="node in nodes" v-bind:key="node.id" 
+               v-bind:style="{ 'cursor' : ((node._children) ? 'pointer' : null), 'pointer-events' : 'all' , 'transform' : `translate(${root.x0}, ${root.y0})`}" 
+               class="node">
+                <circle v-bind:style="{ 'r' : 10, 'fill' : ((node.data._color) ? node.data._color : node.data._defColor)}">
+                </circle>
+                <text class="node-label"
+                      v-bind:style="{ 'fill-opacity' : 0, 'text-anchor' : 'start', 'transform' : 'translate(-30, -15)'}">
+                    {{ node.data.name }}
+                </text>
+            </g>
         </g>
         <defs>
             <marker id="arrowHead" viewBox="-0 -5 10 10" refX="19" refY="0" orient="auto" markerWidth="8" markerHeight="8" xoverflow="visible">
@@ -38,13 +48,16 @@ export default {
             tree_d3: null,
             styleObject: {
                 svgCanvas: {},
-                g: {}
+                g: {},
+                gNode: {}
             },
             duration: Number,
             transitions: null,
             levelWidth: [1],
             nodes: null,
-            links: null
+            links: null,
+            node: null,
+            link: null
         }
     },
     methods: {
@@ -127,7 +140,7 @@ export default {
             // show only root node by default 
             this.root.children.forEach(this.toggleAll)
             this.toggle(this.root)
-            console.log('update(root)')
+            this.update(this.root)
         },
         childCount(n, level) {
             if (n.children && n.children.length > 0) {
@@ -144,7 +157,7 @@ export default {
             // tree expands by 180 px per subtree
             this.canvasSize.newHeight = this.levelWidth.length * 180
 
-            this.tree_d3 = d3.tree().size([this.newWidth, this.newHeight])
+            this.tree_d3 = d3.tree().size([this.canvasSize.newWidth, this.canvasSize.newHeight])
         },
         svgLayoutResize() {
             this.styleObject.svgCanvas.width = this.newWidth + this.margin.right + this.margin.left
@@ -159,13 +172,24 @@ export default {
                 d.y = d.depth * 180
             })
         },
+        nodeLifeCycle() {
+            //this.node = d3.selectAll("g.node")
+                       // .data(this.nodes, function(d) { return d.id || (d.id = ++this.i); });
+
+            //this.node.enter()
+        },
         update(source) {
             this.duration = d3.event ? 250 : 0
             this.childCount(this.root, 0)
             this.treeLayoutResize()
             this.svgLayoutResize()
             this.REinitializeTreeLayout()
-            //  const transitions = vis.transition().duration(duration)
+            this.transitions = d3.select('.svgCanvas').transition().duration(this.duration)
+
+            this.nodes.forEach((node, i) => {
+                node.id = ++i
+            })
+
         }
     },
     beforeMount() {
@@ -179,4 +203,25 @@ export default {
 </script>
 
 <style scoped>
+circle.border-black {
+    stroke: black;
+    stroke-width: 3px;
+}
+
+circle.heavy-neighbour {
+    stroke: #10C1FF;
+    stroke-width: 3px;
+}
+
+text.node-label {
+    fill: black;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+textPath.link-label {
+    fill: black;
+    font-size: 10px;
+    font-weight: bold;
+}
 </style>
