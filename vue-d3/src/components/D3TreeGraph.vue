@@ -122,7 +122,6 @@ export default {
         setCssStyling() {
             this.styleObject.svgCanvas.width = this.canvasSize.width + this.margin.right + this.margin.left
             this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
-
             this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
         },
         initializeTreeLayout() {
@@ -155,11 +154,12 @@ export default {
             this.update(this.root)
         },
         childCount(n, level) {
+            let vm = this
             if (n.children && n.children.length > 0) {
                 if (this.levelWidth.length <= level + 1) this.levelWidth.push(0)
                 this.levelWidth[level + 1] += n.children.length
                 n.children.forEach(function(d) {
-                    this.childCount(d, level + 1)
+                    vm.childCount(d, level + 1)
                 })
             }
         },
@@ -184,12 +184,6 @@ export default {
                 d.y = d.depth * 180
             })
         },
-        nodeLifeCycle() {
-            //this.node = d3.selectAll("g.node")
-                       // .data(this.nodes, function(d) { return d.id || (d.id = ++this.i); });
-
-            //this.node.enter()
-        },
         setClassName(d) {
             this.classObject.gNode[d.data._cssClass ? d.data._cssClass : null]
             this.classObject.gNode[d.data._cssClass] = (Object.keys(this.classObject)) ? true : null
@@ -201,10 +195,11 @@ export default {
             return this.styleObject.circleNode
         },
         gNodeCssStyling(d) {
-            this.styleObject.gNode.cursor = d._children ? 'pointer' : null
-            this.styleObject.gNode['pointer-events'] = 'all'
-            this.styleObject.gNode.transform = `translate(${this.root.x0}, ${this.root.y0})`
-            return this.styleObject.gNode
+            let styleObject = {}
+            styleObject.cursor = d._children ? 'pointer' : null
+            styleObject['pointer-events'] = 'all'
+            styleObject.transform = (d.id === 1) ? `translate(${d.x0}px, ${d.y0}px)` : `translate(${d.x}px, ${d.y}px)`
+            return styleObject
         },
         textNodeCssStyling() {
             this.styleObject.textNode['fill-opacity'] = 0
@@ -219,14 +214,19 @@ export default {
             d3.select(".node-label").transition().duration(250).style("fill-opacity", 0)
         },
         nodeEnter(d) {
-            this.toggle(d)
-            //this.update(d)
+           this.toggle(d)
+           this.childCount(this.root, 0)
+           this.treeLayoutResize()
+           //this.svgLayoutResize()
+           this.tree_d3(this.root)
+           this.nodes = this.root.descendants().reverse()
+           //this.links = this.root.links()
         },
         update(source) {
             this.duration = d3.event ? 250 : 0
             this.childCount(this.root, 0)
             this.treeLayoutResize()
-            this.svgLayoutResize()
+            //this.svgLayoutResize()
             this.REinitializeTreeLayout()
             this.transitions = d3.select('.svgCanvas').transition().duration(this.duration)
 
@@ -236,14 +236,18 @@ export default {
 
         }
     },
-    beforeMount() {
-        this.setClusterObject(this.testTransactionData)
-        this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
-        this.setCssStyling()
-        this.initializeTreeLayout()
-        this.displayTree()
+    created() {
+       this.setClusterObject(this.testTransactionData)
+       this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
+       this.setCssStyling()
+       this.initializeTreeLayout()
+       this.displayTree()
     },
     watch: {
+        nodes(val) {
+            console.log(val)
+
+        }
     }
 }
 </script>
