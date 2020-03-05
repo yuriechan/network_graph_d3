@@ -151,7 +151,6 @@ export default {
             // show only root node by default 
             this.root.children.forEach(this.toggleAll)
             this.toggle(this.root)
-            this.update(this.root)
         },
         childCount(n, level) {
             let vm = this
@@ -223,18 +222,6 @@ export default {
            this.tree_d3(this.root)
            this.nodes = this.root.descendants().reverse()
            this.links = this.root.links()
-        },
-        update(source) {
-            //this.duration = d3.event ? 250 : 0
-            //this.childCount(this.root, 0)
-           // this.treeLayoutResize()
-            //this.svgLayoutResize()
-           // this.REinitializeTreeLayout()
-            //this.transitions = d3.select('.svgCanvas').transition().duration(this.duration)
-            // this.nodes.forEach((node, i) => {
-            //     node.id = ++i
-            // })
-
         }
     },
     created() {
