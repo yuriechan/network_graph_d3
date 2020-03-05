@@ -130,7 +130,7 @@ export default {
             this.root.x0 = this.canvasSize.width / 2
             this.root.y0 = 0
             // initialize the size of tree layout 
-            this.tree_d3 = d3.tree().size([this.width, this.height])
+            this.tree_d3 = d3.tree().size([this.canvasSize.width, this.canvasSize.height])
         },
         toggleAll(d) {
             if (d.children) {
@@ -185,14 +185,16 @@ export default {
             })
         },
         setClassName(d) {
-            this.classObject.gNode[d.data._cssClass ? d.data._cssClass : null]
-            this.classObject.gNode[d.data._cssClass] = (Object.keys(this.classObject)) ? true : null
-            return this.classObject.gNode
+            let classObject = {}
+            classObject[d.data._cssClass ? d.data._cssClass : null]
+            classObject[d.data._cssClass] = (Object.keys(this.classObject)) ? true : null
+            return classObject
         },
         circleCssStyling(d) {
-            this.styleObject.circleNode.r = 10
-            this.styleObject.circleNode.fill = d.data._color ? d.data._color : d.data._defColor
-            return this.styleObject.circleNode
+            let styleObject = {}
+            styleObject.r = 10
+            styleObject.fill = d.data._color ? d.data._color : d.data._defColor
+            return styleObject
         },
         gNodeCssStyling(d) {
             let styleObject = {}
@@ -216,23 +218,22 @@ export default {
         nodeEnter(d) {
            this.toggle(d)
            this.childCount(this.root, 0)
-           this.treeLayoutResize()
+         //  this.treeLayoutResize()
            //this.svgLayoutResize()
            this.tree_d3(this.root)
            this.nodes = this.root.descendants().reverse()
-           //this.links = this.root.links()
+           this.links = this.root.links()
         },
         update(source) {
-            this.duration = d3.event ? 250 : 0
-            this.childCount(this.root, 0)
-            this.treeLayoutResize()
+            //this.duration = d3.event ? 250 : 0
+            //this.childCount(this.root, 0)
+           // this.treeLayoutResize()
             //this.svgLayoutResize()
-            this.REinitializeTreeLayout()
-            this.transitions = d3.select('.svgCanvas').transition().duration(this.duration)
-
-            this.nodes.forEach((node, i) => {
-                node.id = ++i
-            })
+           // this.REinitializeTreeLayout()
+            //this.transitions = d3.select('.svgCanvas').transition().duration(this.duration)
+            // this.nodes.forEach((node, i) => {
+            //     node.id = ++i
+            // })
 
         }
     },
@@ -242,6 +243,7 @@ export default {
        this.setCssStyling()
        this.initializeTreeLayout()
        this.displayTree()
+       this.REinitializeTreeLayout()
     },
     watch: {
         nodes(val) {
