@@ -70,8 +70,6 @@ export default {
             canvasSize: {
                 width: 1280,
                 height: 800,
-                newWidth: Number,
-                newHeight: Number
             },
             indexID: 0,
             root: null,
@@ -85,7 +83,6 @@ export default {
             },
             duration: null,
             transitions: null,
-            levelWidth: [1],
             nodes: null,
             links: null,
             node: null,
@@ -139,15 +136,6 @@ export default {
             }
             balance = balance.join('')
             return parseFloat(balance)
-        },
-        setCanvasSize(width, height) {
-            //this.canvasSize.width = width - this.margin.right - this.margin.left
-            //this.canvasSize.height = height - this.margin.top - this.margin.bottom
-        },
-        setCssStyling() {
-           // this.styleObject.svgCanvas.width = this.canvasSize.width + this.margin.right + this.margin.left
-            //this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
-            //this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
         },
         toggleAll(d) {
             if (d.children) {
