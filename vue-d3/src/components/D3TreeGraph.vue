@@ -1,6 +1,16 @@
 <template>
     <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
         <g v-bind:style="styleObject.g">
+            <path v-for="(link, i) in links"
+                  v-bind:key="link.id"
+                  v-bind:id="`linkPath${i}`"
+                  v-bind:d="line([link.source, link.target])"
+                  class="link" 
+                  fill="none" 
+                  stroke="#ADADAD" 
+                  stroke-width="1.5" 
+                  marker-end="url(#arrowHead)">
+            </path>
             <g class="linkLabels" id="LinkLabels">
                 <text class="linkLabel"></text>
             </g>
@@ -69,7 +79,8 @@ export default {
             link: null,
             classObject: {
                 gNode: {}
-            }
+            },
+            line: null
         }
     },
     methods: {
@@ -225,6 +236,9 @@ export default {
         }
     },
     created() {
+        this.line = d3.line()
+               .x( d => d.x )
+               .y( d => d.y )
        this.setClusterObject(this.testTransactionData)
        this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
        this.setCssStyling()
