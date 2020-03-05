@@ -195,10 +195,11 @@ export default {
             return styleObject
         },
         textNodeCssStyling() {
-            this.styleObject.textNode['fill-opacity'] = 0
-            this.styleObject.textNode['text-anchor'] = 'start'
-            this.styleObject.textNode.transform = 'translate(-30px, -15px)'
-            return this.styleObject.textNode
+            let styleObject = {}
+            styleObject['fill-opacity'] = 0
+            styleObject['text-anchor'] = 'start'
+            styleObject.transform = 'translate(-30px, -15px)'
+            return styleObject
         },
         labelAppear(e) {
             d3.select(e.target.nextSibling).transition().duration(250).style("fill-opacity", 1)
