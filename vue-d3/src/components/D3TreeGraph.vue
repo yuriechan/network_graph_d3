@@ -1,6 +1,8 @@
 <template>
-    <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas">
-        <g v-bind:style="styleObject.g">
+    <svg class="svgCanvas" v-bind:style="styleObject.svgCanvas"
+         v-bind:width="canvasSize.width + this.margin.right + this.margin.left"
+         v-bind:height="canvasSize.height + this.margin.top + this.margin.bottom">
+        <g v-bind:style="{ 'transform' : `translate(${margin.left}px, ${margin.top}px)`}">
             <path v-for="(link, i) in links"
                   v-bind:key="link.id"
                   v-bind:id="`linkPath${i}`"
@@ -81,7 +83,7 @@ export default {
                 circleNode: {},
                 textNode: {}
             },
-            duration: Number,
+            duration: null,
             transitions: null,
             levelWidth: [1],
             nodes: null,
@@ -91,7 +93,8 @@ export default {
             classObject: {
                 gNode: {}
             },
-            line: null
+            line: d3.line().x( d => d.x ).y( d => d.y ),
+            level: 0
         }
     },
     methods: {
@@ -138,21 +141,13 @@ export default {
             return parseFloat(balance)
         },
         setCanvasSize(width, height) {
-            this.canvasSize.width = width - this.margin.right - this.margin.left
-            this.canvasSize.height = height - this.margin.top - this.margin.bottom
+            //this.canvasSize.width = width - this.margin.right - this.margin.left
+            //this.canvasSize.height = height - this.margin.top - this.margin.bottom
         },
         setCssStyling() {
-            this.styleObject.svgCanvas.width = this.canvasSize.width + this.margin.right + this.margin.left
-            this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
-            this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
-        },
-        initializeTreeLayout() {
-            // initialize tree property provided by d3 library (ex. children, parent, depth ...etc)
-            this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
-            this.root.x0 = this.canvasSize.width / 2
-            this.root.y0 = 0
-            // initialize the size of tree layout 
-            this.tree_d3 = d3.tree().size([this.canvasSize.width, this.canvasSize.height])
+           // this.styleObject.svgCanvas.width = this.canvasSize.width + this.margin.right + this.margin.left
+            //this.styleObject.svgCanvas.height = this.canvasSize.height + this.margin.top + this.margin.bottom
+            //this.styleObject.g.transform = `translate(${this.margin.left}px, ${this.margin.top}px)`
         },
         toggleAll(d) {
             if (d.children) {
@@ -169,41 +164,16 @@ export default {
                 d._children = null
             }
         },
-        displayTree() {
-            // show only root node by default 
-            this.root.children.forEach(this.toggleAll)
-            this.toggle(this.root)
-        },
-        childCount(n, level) {
+        childCount(n, level, levelWidth = [1]) {
             let vm = this
             if (n.children && n.children.length > 0) {
-                if (this.levelWidth.length <= level + 1) this.levelWidth.push(0)
-                this.levelWidth[level + 1] += n.children.length
+                if (levelWidth.length <= level + 1) levelWidth.push(0)
+                levelWidth[level + 1] += n.children.length
                 n.children.forEach(function(d) {
-                    vm.childCount(d, level + 1)
+                    vm.childCount(d, level + 1, levelWidth)
                 })
             }
-        },
-        treeLayoutResize() {
-            // tree expands by 20 px per tree depth
-            this.canvasSize.newWidth = d3.max(this.levelWidth) * 20
-            // tree expands by 180 px per subtree
-            this.canvasSize.newHeight = this.levelWidth.length * 180
-
-            this.tree_d3 = d3.tree().size([this.canvasSize.newWidth, this.canvasSize.newHeight])
-        },
-        svgLayoutResize() {
-            this.styleObject.svgCanvas.width = this.newWidth + this.margin.right + this.margin.left
-            this.styleObject.svgCanvas.height = this.newHeight + this.margin.top + this.margin.bottom
-        },
-        REinitializeTreeLayout() {
-            this.tree_d3(this.root)
-            this.nodes = this.root.descendants().reverse()
-            this.links = this.root.links()
-
-            this.nodes.forEach(function (d) {
-                d.y = d.depth * 180
-            })
+            return levelWidth
         },
         setClassName(d) {
             let classObject = {}
@@ -238,29 +208,31 @@ export default {
         },
         nodeEnter(d) {
            this.toggle(d)
-           this.childCount(this.root, 0)
-         //  this.treeLayoutResize()
-           //this.svgLayoutResize()
            this.tree_d3(this.root)
            this.nodes = this.root.descendants().reverse()
            this.links = this.root.links()
         }
     },
     created() {
-        this.line = d3.line()
-               .x( d => d.x )
-               .y( d => d.y )
-       this.setClusterObject(this.testTransactionData)
-       this.setCanvasSize(this.canvasSize.width, this.canvasSize.height)
-       this.setCssStyling()
-       this.initializeTreeLayout()
-       this.displayTree()
-       this.REinitializeTreeLayout()
+        this.setClusterObject(this.testTransactionData)
+        this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
+        this.root.children.forEach(this.toggleAll)
+        this.toggle(this.root)
+        this.nodes = this.root.descendants().reverse()
+        this.links = this.root.links()           
     },
     watch: {
-        nodes(val) {
-            console.log(val)
+        nodes(newVal) {
+            this.canvasSize.width = d3.max(this.childCount(this.root, 0)) * 20
+            this.canvasSize.height = this.childCount(this.root, 0).length * 180
+            this.root.x0 = this.canvasSize.width / 2
+            this.root.y0 = 0
+            this.tree_d3 = d3.tree().size([this.canvasSize.width, this.canvasSize.height])
+            this.tree_d3(this.root)  
 
+            newVal.forEach(function (d) {
+                d.y = d.depth * 180
+            })  
         }
     }
 }
