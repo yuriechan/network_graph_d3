@@ -10,8 +10,8 @@
                v-on:click="nodeEnter(node)">
                 <circle v-bind:style="circleCssStyling(node)"
                         v-bind:class="setClassName(node)"
-                        v-on:mouseover="labelAppear()"
-                        v-on:mouseout="labelDisappear()">
+                        v-on:mouseover="labelAppear($event)"
+                        v-on:mouseout="labelDisappear($event)">
                 </circle>
                 <text class="node-label"
                       v-bind:style="textNodeCssStyling()">
@@ -209,11 +209,11 @@ export default {
             this.styleObject.textNode.transform = 'translate(-30px, -15px)'
             return this.styleObject.textNode
         },
-        labelAppear(node) {
-            d3.select(".node-label").transition().duration(250).style("fill-opacity", 1)
+        labelAppear(e) {
+            d3.select(e.target.nextSibling).transition().duration(250).style("fill-opacity", 1)
         },
-        labelDisappear(node) {
-            d3.select(".node-label").transition().duration(250).style("fill-opacity", 0)
+        labelDisappear(e) {
+            d3.select(e.target.nextSibling).transition().duration(250).style("fill-opacity", 0)
         },
         nodeEnter(d) {
            this.toggle(d)
