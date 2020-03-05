@@ -12,7 +12,18 @@
                   marker-end="url(#arrowHead)">
             </path>
             <g class="linkLabels" id="LinkLabels">
-                <text class="linkLabel"></text>
+                <text class="linkLabel">
+                    <textPath v-for="(link, i) in links"
+                        v-bind:key="link.id"
+                        v-bind:x="link.source.x + (link.target.x - link.source.x) * 0.8" 
+                        v-bind:y="link.source.y + (link.target.y - link.source.y) * 0.8" 
+                        v-bind = "{ 'xlink:href' : '#linkPath'+i }" 
+                        class="link-label" 
+                        dy="5" 
+                        startOffset="40%">
+                        {{ link.target.data.transactionAmount }}
+                    </textPath>
+                </text>
             </g>
             <g v-for="node in nodes" v-bind:key="node.id" 
                v-bind:style="gNodeCssStyling(node)" 
