@@ -82,7 +82,7 @@ export default {
                 textNode: {}
             },
             duration: null,
-            transitions: null,
+            transitions: d3.select("svg").transition().duration(d3.event ? 250 : 0),
             nodes: null,
             links: null,
             node: null,
@@ -179,7 +179,7 @@ export default {
             let styleObject = {}
             styleObject.cursor = d._children ? 'pointer' : null
             styleObject['pointer-events'] = 'all'
-            styleObject.transform = (d.id === 1) ? `translate(${d.x0}px, ${d.y0}px)` : `translate(${d.x}px, ${d.y}px)`
+            styleObject.transform = `translate(${d.x0}px, ${d.y0}px)`
             return styleObject
         },
         textNodeCssStyling() {
@@ -222,7 +222,15 @@ export default {
             newVal.forEach(function (d) {
                 d.y = d.depth * 180
             })  
-        }
+            
+            newVal.forEach(function(d, i) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+                d.id = i
+                });
+            }
+
+           
     }
 }
 </script>
@@ -249,4 +257,6 @@ textPath.link-label {
     font-size: 10px;
     font-weight: bold;
 }
+
+
 </style>
