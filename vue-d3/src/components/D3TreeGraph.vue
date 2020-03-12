@@ -27,7 +27,9 @@
                     </textPath>
                 </text>
             </g>
-            <g v-for="node in nodes" v-bind:key="node.id" 
+            <transition-group tag="g" name="smooth" v-on:before-enter="beforeEnter">
+            <g v-for="node in nodes" v-bind:key="node.data.id" 
+               v-bind:id="node.id"
                v-bind:style="gNodeCssStyling(node)" 
                class="node"
                v-on:click="nodeEnter(node)">
@@ -41,6 +43,7 @@
                     {{ node.data.name }}
                 </text>
             </g>
+             </transition-group>
         </g>
         <defs>
             <marker id="arrowHead" viewBox="-0 -5 10 10" refX="19" refY="0" orient="auto" markerWidth="8" markerHeight="8" xoverflow="visible">
@@ -176,10 +179,13 @@ export default {
             return styleObject
         },
         gNodeCssStyling(d) {
+            console.log('inside gNodeCssStyling()')
             let styleObject = {}
             styleObject.cursor = d._children ? 'pointer' : null
             styleObject['pointer-events'] = 'all'
-            styleObject.transform = `translate(${d.x0}px, ${d.y0}px)`
+            //styleObject.transform = `translate(${this.root.x0}px, ${this.root.y0}px)`
+            styleObject.transform = `translate(${d.x}px, ${d.y}px)`
+            styleObject['transition'] = 'all 3s'
             return styleObject
         },
         textNodeCssStyling() {
@@ -196,22 +202,32 @@ export default {
             d3.select(e.target.nextSibling).transition().duration(250).style("fill-opacity", 0)
         },
         nodeEnter(d) {
+           console.log('inside nodeEnter()')
            this.toggle(d)
            this.tree_d3(this.root)
            this.nodes = this.root.descendants().reverse()
            this.links = this.root.links()
+        },
+        beforeEnter(el) {
+            console.log('inside beforeEnter()')
+            console.log(this.root.x)
+            console.log(el)
+           //el.style.transform = `translate(${this.root.x}px, ${this.root.y}px)`
         }
     },
     created() {
+        console.log('inside created()')
         this.setClusterObject(this.testTransactionData)
         this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
         this.root.children.forEach(this.toggleAll)
         this.toggle(this.root)
         this.nodes = this.root.descendants().reverse()
-        this.links = this.root.links()           
+        this.links = this.root.links() 
+        this.root.id = 0
     },
     watch: {
         nodes(newVal) {
+            console.log('inside watch()')
             this.canvasSize.width = d3.max(this.childCount(this.root, 0)) * 20
             this.canvasSize.height = this.childCount(this.root, 0).length * 180
             this.root.x0 = this.canvasSize.width / 2
@@ -235,7 +251,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 circle.border-black {
     stroke: black;
     stroke-width: 3px;
@@ -256,6 +272,14 @@ textPath.link-label {
     fill: black;
     font-size: 10px;
     font-weight: bold;
+}
+
+.smooth-enter-to {
+    outline: solid 3px blue;
+}
+
+.smooth-enter-active:hover {
+    outline-color: red
 }
 
 
