@@ -27,7 +27,10 @@
                     </textPath>
                 </text>
             </g>
-            <transition-group tag="g" name="smooth" v-on:before-enter="beforeEnter">
+            <transition-group tag="g" name="smooth" 
+                              v-on:before-enter="beforeEnter"
+                              v-on:enter="enter"
+                              >
             <g v-for="node in nodes" v-bind:key="node.data.id" 
                v-bind:id="node.id"
                v-bind:style="gNodeCssStyling(node)" 
@@ -183,6 +186,7 @@ export default {
             let styleObject = {}
             styleObject.cursor = d._children ? 'pointer' : null
             styleObject['pointer-events'] = 'all'
+
             //styleObject.transform = `translate(${this.root.x0}px, ${this.root.y0}px)`
             styleObject.transform = `translate(${d.x}px, ${d.y}px)`
             styleObject['transition'] = 'all 3s'
@@ -210,10 +214,21 @@ export default {
         },
         beforeEnter(el) {
             console.log('inside beforeEnter()')
-            console.log(this.root.x)
             console.log(el)
-           //el.style.transform = `translate(${this.root.x}px, ${this.root.y}px)`
+            console.log(`translate(${this.root.x}px, ${this.root.y}px)`)
+             el.style.transform = `translate(10px, 10px)`
+             //el.style.outline =  'solid 3px pink'
+        },
+        enter(el, done) {
+            console.log('inside enter()')
+            console.log(`translate(${this.nodes.x}px, ${this.nodes.y}px)`)
+            Velocity(el, {transform : "translate(20px, 20px)"}, {complete: done})
+           el.style.outline =  'solid 3px green'
+            el.style.transform = `translate(${this.root.x}px, ${this.root.y}px)`
         }
+    },
+    beforeMount: function () {
+        console.log('hi')
     },
     created() {
         console.log('inside created()')
@@ -224,6 +239,7 @@ export default {
         this.nodes = this.root.descendants().reverse()
         this.links = this.root.links() 
         this.root.id = 0
+        console.log(`${this.root.x}, ${this.root.y}`)
     },
     watch: {
         nodes(newVal) {
@@ -243,10 +259,9 @@ export default {
                 d.x0 = d.x;
                 d.y0 = d.y;
                 d.id = i
-                });
-            }
-
-           
+            });
+            console.log(`${this.root.x}, ${this.root.y}`)
+        }
     }
 }
 </script>
@@ -274,12 +289,21 @@ textPath.link-label {
     font-weight: bold;
 }
 
+/* .smooth-enter {
+    transform: translate(0, 0) !important;
+    outline: solid 3px orange;
+}
+
 .smooth-enter-to {
     outline: solid 3px blue;
-}
+} */
 
 .smooth-enter-active:hover {
     outline-color: red
+}
+
+.link {
+    stroke: red;
 }
 
 
