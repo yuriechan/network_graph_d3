@@ -27,10 +27,7 @@
                     </textPath>
                 </text>
             </g>
-            <transition-group tag="g" name="smooth" 
-                              v-on:before-enter="beforeEnter"
-                              v-on:enter="enter"
-                              >
+            <transition-group tag="g">
             <g v-for="node in nodes" v-bind:key="node.data.id" 
                v-bind:id="node.id"
                v-bind:style="gNodeCssStyling(node)" 
@@ -58,6 +55,7 @@
 
 <script>
 import * as d3 from 'd3'
+import Velocity from 'velocity-animate'
 import { testTransactionData, colors } from '../transactions'
 
 export default {
@@ -186,8 +184,6 @@ export default {
             let styleObject = {}
             styleObject.cursor = d._children ? 'pointer' : null
             styleObject['pointer-events'] = 'all'
-
-            //styleObject.transform = `translate(${this.root.x0}px, ${this.root.y0}px)`
             styleObject.transform = `translate(${d.x}px, ${d.y}px)`
             styleObject['transition'] = 'all 3s'
             return styleObject
@@ -212,19 +208,11 @@ export default {
            this.nodes = this.root.descendants().reverse()
            this.links = this.root.links()
         },
-        beforeEnter(el) {
+        beforeEnter(el, done) {
             console.log('inside beforeEnter()')
-            console.log(el)
-            console.log(`translate(${this.root.x}px, ${this.root.y}px)`)
-             el.style.transform = `translate(10px, 10px)`
-             //el.style.outline =  'solid 3px pink'
         },
         enter(el, done) {
             console.log('inside enter()')
-            console.log(`translate(${this.nodes.x}px, ${this.nodes.y}px)`)
-            Velocity(el, {transform : "translate(20px, 20px)"}, {complete: done})
-           el.style.outline =  'solid 3px green'
-            el.style.transform = `translate(${this.root.x}px, ${this.root.y}px)`
         }
     },
     beforeMount: function () {
@@ -239,7 +227,6 @@ export default {
         this.nodes = this.root.descendants().reverse()
         this.links = this.root.links() 
         this.root.id = 0
-        console.log(`${this.root.x}, ${this.root.y}`)
     },
     watch: {
         nodes(newVal) {
@@ -260,7 +247,6 @@ export default {
                 d.y0 = d.y;
                 d.id = i
             });
-            console.log(`${this.root.x}, ${this.root.y}`)
         }
     }
 }
@@ -298,13 +284,8 @@ textPath.link-label {
     outline: solid 3px blue;
 } */
 
-.smooth-enter-active:hover {
+/* .smooth-enter-active:hover {
     outline-color: red
-}
-
-.link {
-    stroke: red;
-}
-
+} */
 
 </style>
