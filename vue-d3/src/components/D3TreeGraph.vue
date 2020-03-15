@@ -23,27 +23,26 @@
                         class="link-label" 
                         dy="5" 
                         startOffset="40%">
-                        {{ link.target.data.transactionAmount }}
+                        {{ (link.target.data.transactionAmount) ? link.target.data.transactionAmount : 'null' }}
                     </textPath>
                 </text>
             </g>
-            <transition-group tag="g">
-            <g v-for="node in nodes" v-bind:key="node.data.id" 
-               v-bind:id="node.id"
-               v-bind:style="gNodeCssStyling(node)" 
-               class="node"
-               v-on:click="nodeEnter(node)">
-                <circle v-bind:style="circleCssStyling(node)"
-                        v-bind:class="setClassName(node)"
-                        v-on:mouseover="labelAppear($event)"
-                        v-on:mouseout="labelDisappear($event)">
-                </circle>
-                <text class="node-label"
-                      v-bind:style="textNodeCssStyling()">
-                    {{ node.data.name }}
-                </text>
-            </g>
-             </transition-group>
+            <transition-group tag="g" name="nodeTransition">
+                <g v-for="node in nodes" v-bind:key="node.data.id" 
+                v-bind:style="gNodeCssStyling(node)" 
+                class="node"
+                v-on:click="nodeEnter(node)">
+                    <circle v-bind:style="circleCssStyling(node)"
+                            v-bind:class="setClassName(node)"
+                            v-on:mouseover="labelAppear($event)"
+                            v-on:mouseout="labelDisappear($event)">
+                    </circle>
+                    <text class="node-label"
+                        v-bind:style="textNodeCssStyling()">
+                        {{ node.data.name }}
+                    </text>
+                </g>
+            </transition-group>
         </g>
         <defs>
             <marker id="arrowHead" viewBox="-0 -5 10 10" refX="19" refY="0" orient="auto" markerWidth="8" markerHeight="8" xoverflow="visible">
@@ -180,12 +179,10 @@ export default {
             return styleObject
         },
         gNodeCssStyling(d) {
-            console.log('inside gNodeCssStyling()')
             let styleObject = {}
             styleObject.cursor = d._children ? 'pointer' : null
             styleObject['pointer-events'] = 'all'
             styleObject.transform = `translate(${d.x}px, ${d.y}px)`
-            styleObject['transition'] = 'all 3s'
             return styleObject
         },
         textNodeCssStyling() {
@@ -202,35 +199,22 @@ export default {
             d3.select(e.target.nextSibling).transition().duration(250).style("fill-opacity", 0)
         },
         nodeEnter(d) {
-           console.log('inside nodeEnter()')
            this.toggle(d)
            this.tree_d3(this.root)
            this.nodes = this.root.descendants().reverse()
            this.links = this.root.links()
-        },
-        beforeEnter(el, done) {
-            console.log('inside beforeEnter()')
-        },
-        enter(el, done) {
-            console.log('inside enter()')
         }
     },
-    beforeMount: function () {
-        console.log('hi')
-    },
     created() {
-        console.log('inside created()')
         this.setClusterObject(this.testTransactionData)
         this.root = d3.hierarchy(this.clusterGraphData.nodes[0])
         this.root.children.forEach(this.toggleAll)
         this.toggle(this.root)
         this.nodes = this.root.descendants().reverse()
         this.links = this.root.links() 
-        this.root.id = 0
     },
     watch: {
         nodes(newVal) {
-            console.log('inside watch()')
             this.canvasSize.width = d3.max(this.childCount(this.root, 0)) * 20
             this.canvasSize.height = this.childCount(this.root, 0).length * 180
             this.root.x0 = this.canvasSize.width / 2
@@ -275,17 +259,12 @@ textPath.link-label {
     font-weight: bold;
 }
 
-/* .smooth-enter {
-    transform: translate(0, 0) !important;
-    outline: solid 3px orange;
+.nodeTransition-enter, .nodeTransition-leave-to {
+    opacity: 0
 }
 
-.smooth-enter-to {
-    outline: solid 3px blue;
-} */
-
-/* .smooth-enter-active:hover {
-    outline-color: red
-} */
+.nodeTransition-enter-active, .nodeTransition-leave-active {
+    transition: opacity 1s;
+}
 
 </style>
