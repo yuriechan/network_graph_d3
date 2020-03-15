@@ -3,8 +3,9 @@
          v-bind:width="canvasSize.width + this.margin.right + this.margin.left"
          v-bind:height="canvasSize.height + this.margin.top + this.margin.bottom">
         <g v-bind:style="{ 'transform' : `translate(${margin.left}px, ${margin.top}px)`}">
+            <transition-group tag="g" name="linkTransition">
             <path v-for="(link, i) in links"
-                  v-bind:key="link.id"
+                  v-bind:key="link.target.data.id"
                   v-bind:id="`linkPath${i}`"
                   v-bind:d="line([link.source, link.target])"
                   class="link" 
@@ -13,10 +14,11 @@
                   stroke-width="1.5" 
                   marker-end="url(#arrowHead)">
             </path>
+         </transition-group>
             <g class="linkLabels" id="LinkLabels">
                 <text class="linkLabel">
                     <textPath v-for="(link, i) in links"
-                        v-bind:key="link.id"
+                        v-bind:key="link.target.data.id"
                         v-bind:x="link.source.x + (link.target.x - link.source.x) * 0.8" 
                         v-bind:y="link.source.y + (link.target.y - link.source.y) * 0.8" 
                         v-bind = "{ 'xlink:href' : '#linkPath'+i }" 
@@ -259,11 +261,27 @@ textPath.link-label {
     font-weight: bold;
 }
 
-.nodeTransition-enter, .nodeTransition-leave-to {
+.nodeTransition-enter, 
+.nodeTransition-leave-to
+ {
     opacity: 0
 }
 
-.nodeTransition-enter-active, .nodeTransition-leave-active {
+.nodeTransition-enter-active, 
+.nodeTransition-leave-active
+ {
+    transition: opacity 1s;
+}
+
+.linkTransition-enter,
+.linkTransition-leave-to
+{
+    opacity: 0
+}
+
+.linkTransition-enter-active,
+.linkTransition-leave-active 
+{
     transition: opacity 1s;
 }
 
